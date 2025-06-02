@@ -1,0 +1,38 @@
+from flask import Blueprint, jsonify, request
+from config import firebase_service
+
+CREATE_BOOKING = Blueprint("CREATE_BOOKING", __name__)
+
+@CREATE_BOOKING.route("/create_booking", methods=["POST"])
+def create_booking():
+    try:
+        data = request.json
+        db = firebase_service.db
+        
+
+        # Crear servicio en Firestore
+        doc_ref = db.collection("reservas").add({
+            "id": data["id"],
+            "businessId": data["businessId"],
+            "serviceId": data["serviceId"],
+            "userId": data["userId"],
+            "userName": data["userName"],
+            "userEmail": data["userEmail"],
+            "userPhone": data["userPhone"],
+            "date": data["date"],
+            "start": data["start"],
+            "end": data["end"],
+            "status": data["status"],
+            "paymentStatus": data["paymentStatus"],
+            "notes": data["notes"]
+            
+        })
+
+        if not doc_ref:
+            return jsonify({"status": 404, "details": "No se pudo crear la reserva"}), 404
+
+        return jsonify({"status": 200, "details": "Reserva creada"}), 200
+
+    except Exception as e:
+        print("error",str(e))
+        return jsonify({"status": 500, "error": str(e)}), 500

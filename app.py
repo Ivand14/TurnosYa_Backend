@@ -28,6 +28,7 @@ from routes.bookings.get_bookings import GET_BOOKING
 from routes.bookings.user_booking import GET_USER_BOOKING
 from routes.company.get_employee_byId import GET_EMPLOYEE_BY_ID
 from routes.company.update_service_card import UPDATE_SERVICE_CARD
+from routes.bookings.cancel_reservation import DELETE_BOOKING
 app = Flask(__name__)
 app.secret_key = os.environ.get("SUPER_SECRET_KEY")
 CORS(app, 
@@ -63,5 +64,6 @@ app.register_blueprint(GET_BOOKING)
 app.register_blueprint(GET_USER_BOOKING)
 app.register_blueprint(GET_EMPLOYEE_BY_ID)
 app.register_blueprint(UPDATE_SERVICE_CARD)
+app.register_blueprint(DELETE_BOOKING)
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)

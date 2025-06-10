@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from config import firebase_service
+from flask_socketio import SocketIO
 
 CREATE_BOOKING = Blueprint("CREATE_BOOKING", __name__)
 

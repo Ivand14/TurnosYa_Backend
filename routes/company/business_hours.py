@@ -17,6 +17,9 @@ def business_hours():
             "businessId": data["businessId"]
         })
         
+        businesshrs_doc = business_hours_ref[1].id
+        create_businesshrs = db.collection("horarios_atencion").document(businesshrs_doc).get().to_dict()
+        
         if not business_hours_ref:
             return jsonify({
             "status": 404,  
@@ -25,7 +28,7 @@ def business_hours():
         
         return jsonify({
             "status": 200,  
-            "details": "Horarios creados",
+            "details": create_businesshrs,
         })
         
     except Exception as e:

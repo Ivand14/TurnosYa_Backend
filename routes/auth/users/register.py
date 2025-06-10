@@ -8,7 +8,7 @@ SIGNUP_BP = Blueprint("Register", __name__)
 @SIGNUP_BP.route("/registrarse", methods=["POST"]) 
 def crear_usuario():
     data = request.json
-
+    db = firebase_service.db
     # Crear un nuevo usuario
     try:
         user = auth.create_user(
@@ -19,7 +19,7 @@ def crear_usuario():
         print("user",user)
         print(f"Usuario creado exitosamente: {user.uid}")
         if user.uid:
-            firebase_service.db.collection("usuarios").add({
+            db.collection("usuarios").add({
                 "email":user.email,
                 "id": user.uid,
                 "name": user.display_name,

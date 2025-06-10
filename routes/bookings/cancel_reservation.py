@@ -5,6 +5,7 @@ DELETE_BOOKING = Blueprint("DELETE_BOOKING", __name__)
 
 @DELETE_BOOKING.route("/cancel_booking/<bookingId>", methods=["DELETE"])
 def cancel_booking(bookingId):
+    from app import socketio
     db = firebase_service.db
     try:
 
@@ -20,6 +21,14 @@ def cancel_booking(bookingId):
 
         for doc in doc_list:
             doc.reference.delete()
+            
+        socketio.emit(
+            "cancel_book",
+            {
+                "bookingId":bookingId,
+                "action":"delete"
+            }
+        )
 
         return jsonify({"status": 200, "details": f"Reserva eliminada: {bookingId}"}), 200
 

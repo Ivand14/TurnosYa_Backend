@@ -13,7 +13,7 @@ def delete_schedule():
             return jsonify({"error": "ID requerido"}), 400
 
         db = firebase_service.db
-        doc_ref = db.collection("horarios").where("id", "==", schedule_id)
+        doc_ref = db.collection("horarios_atencion").where("id", "==", schedule_id)
         doc_snapshot = doc_ref.stream()
 
         doc_list = list(doc_snapshot)  # Convertir a lista para verificar existencia

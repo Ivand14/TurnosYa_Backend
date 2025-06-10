@@ -8,7 +8,6 @@ def create_service():
     try:
         data = request.json
         db = firebase_service.db
-        print(data)
 
         # Crear servicio en Firestore
         doc_ref = db.collection("servicios").add({
@@ -23,11 +22,14 @@ def create_service():
             "requiresSpecificEmployee": data["service"]["requiresSpecificEmployee"],
             "allowedEmployeeIds": data["service"]["allowedEmployeeIds"] or []
         })
+        
+        doc_id = doc_ref[1].id
+        created_service = db.collection("servicios").document(doc_id).get().to_dict()
 
         if not doc_ref:
             return jsonify({"status": 404, "details": "No se pudo crear el servicio"}), 404
 
-        return jsonify({"status": 200, "details": "Servicio creado"}), 200
+        return jsonify({"status": 200, "details": created_service}), 200
 
     except Exception as e:
         print("error",str(e))

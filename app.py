@@ -29,14 +29,24 @@ from routes.bookings.user_booking import GET_USER_BOOKING
 from routes.company.get_employee_byId import GET_EMPLOYEE_BY_ID
 from routes.company.update_service_card import UPDATE_SERVICE_CARD
 from routes.bookings.cancel_reservation import DELETE_BOOKING
+from routes.company.delete_employee import DELETE_EMPLOYEE
+from dotenv import load_dotenv
+from config.socket_config import socketio
+load_dotenv()
+
 app = Flask(__name__)
 app.secret_key = os.environ.get("SUPER_SECRET_KEY")
+
+socketio.init_app(app)  
+
+
 CORS(app, 
     origins=["http://localhost:8080"], 
     methods=["GET", "POST", "OPTIONS","PATCH","DELETE"],
     supports_credentials=True)
 
-
+# print("SocketIO instance:", socketio)
+  
 
 app.register_blueprint(SIGNUP_BP)
 app.register_blueprint(LOGIN_BP)
@@ -65,5 +75,6 @@ app.register_blueprint(GET_USER_BOOKING)
 app.register_blueprint(GET_EMPLOYEE_BY_ID)
 app.register_blueprint(UPDATE_SERVICE_CARD)
 app.register_blueprint(DELETE_BOOKING)
+app.register_blueprint(DELETE_EMPLOYEE)
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=False)
+    socketio.run(app, host="0.0.0.0", port=5000, debug=True)

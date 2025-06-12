@@ -4,7 +4,9 @@ from firebase_admin import credentials,firestore
 import json
 import os
 
-with open(os.path.join(os.path.dirname(__file__), "turnos_ya.json")) as f:
+secret_path = "/etc/secrets/turnos_ya.json"
+
+with open(secret_path) as f:
     firebase_config = json.load(f)
 
 def initialize_firebase():

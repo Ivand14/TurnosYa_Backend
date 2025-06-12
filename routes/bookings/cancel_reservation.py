@@ -1,11 +1,10 @@
 from flask import Blueprint, jsonify, request
 from config import firebase_service
-
+from config.socket_config import socketio
 DELETE_BOOKING = Blueprint("DELETE_BOOKING", __name__)
 
 @DELETE_BOOKING.route("/cancel_booking/<bookingId>", methods=["DELETE"])
 def cancel_booking(bookingId):
-    from app import socketio
     db = firebase_service.db
     try:
 
@@ -23,11 +22,11 @@ def cancel_booking(bookingId):
             doc.reference.delete()
             
         socketio.emit(
-            "cancel_book",
+            "new_book",
             {
-                "bookingId":bookingId,
-                "action":"delete"
-            }
+                "action":"cancel",
+                "reserva":bookingId
+            },
         )
 
         return jsonify({"status": 200, "details": f"Reserva eliminada: {bookingId}"}), 200

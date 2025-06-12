@@ -30,8 +30,10 @@ from routes.company.get_employee_byId import GET_EMPLOYEE_BY_ID
 from routes.company.update_service_card import UPDATE_SERVICE_CARD
 from routes.bookings.cancel_reservation import DELETE_BOOKING
 from routes.company.delete_employee import DELETE_EMPLOYEE
+from routes.mercado_pago.user_authorization import USER_AUTHORIZATION
 from dotenv import load_dotenv
 from config.socket_config import socketio
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -41,7 +43,7 @@ socketio.init_app(app)
 
 
 CORS(app, 
-    origins=["http://localhost:8080"], 
+    origins=["*"], 
     methods=["GET", "POST", "OPTIONS","PATCH","DELETE"],
     supports_credentials=True)
 
@@ -76,5 +78,7 @@ app.register_blueprint(GET_EMPLOYEE_BY_ID)
 app.register_blueprint(UPDATE_SERVICE_CARD)
 app.register_blueprint(DELETE_BOOKING)
 app.register_blueprint(DELETE_EMPLOYEE)
+app.register_blueprint(USER_AUTHORIZATION)
+
 if __name__ == '__main__':
     socketio.run(app, host="0.0.0.0", port=5000, debug=True)

@@ -8,7 +8,6 @@ def create_employee():
     data = request.get_json()  
     db = firebase_service.db
     
-    print(data)
 
     if not data or "businessId" not in data:  
         return jsonify({
@@ -27,11 +26,13 @@ def create_employee():
             "status":"active" 
         })
         
-        print(new_employee_ref)
-
+        new_emp = new_employee_ref[1].id
+        
+        new_emp_doc = db.collection("employees").document(new_emp).get()
+        
         return jsonify({
             "status": 201,  
-            "details": "Empleado creado con éxito",
+            "details": new_emp_doc.to_dict(),
         })
 
     except Exception as e:

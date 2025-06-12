@@ -80,5 +80,9 @@ app.register_blueprint(DELETE_BOOKING)
 app.register_blueprint(DELETE_EMPLOYEE)
 app.register_blueprint(USER_AUTHORIZATION)
 
+@app.route("/")
+def home():
+    return "Servidor Flask activo"
+
 if __name__ == '__main__':
     socketio.run(app, host="0.0.0.0", port=5000, debug=True)

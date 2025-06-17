@@ -2,7 +2,7 @@ import os
 from flask import Blueprint, jsonify,redirect
 import mercadopago
 from dotenv import load_dotenv
-import secrets
+import uuid
 import requests
 load_dotenv()
 
@@ -36,8 +36,8 @@ def mercado_pago_login():
 @USER_AUTHORIZATION.route("/mercado_pago/salesman", methods=["GET"])
 def conect_to_salesman():
     client_id = os.getenv("MP_CLIENT_ID")
-    state = secrets.token_hex(16)
-    auth_url = f"https://www.mercadopago.com.ar/auth/authorize?client_id={client_id}&response_type=code&platform_id=mp&state=AUTORIZACIONCLIENTE&redirect_uri={redirect_uri}"
+    randomId = uuid.uuid4()
+    auth_url = f"https://www.mercadopago.com.ar/auth/authorize?client_id={client_id}&response_type=code&platform_id=mp&state=AUTORIZACIONCLIENTE&redirect_uri={redirect_uri}/{randomId}"
     return redirect(auth_url)
 
 

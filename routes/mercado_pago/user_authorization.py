@@ -13,8 +13,7 @@ USER_AUTHORIZATION = Blueprint("USER_AUTHORIZATION", __name__)
 # 🔹 URL de autorización para que los vendedores se conecten
 @USER_AUTHORIZATION.route("/mercado_pago_login", methods=["GET"])
 def mercado_pago_login():
-    auth_url = f"https://auth.mercadopago.com/authorization?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}"
-    return redirect(auth_url)
+    return redirect(f"https://auth.mercadopago.com/authorization?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}", code=302)
 
 # 🔹 Callback que recibe el código y solicita el Access Token
 @USER_AUTHORIZATION.route("/mercadopago/callback", methods=["GET"])

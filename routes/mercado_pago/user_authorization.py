@@ -37,8 +37,8 @@ def mercado_pago_login():
 def conect_to_salesman():
     client_id = os.getenv("MP_CLIENT_ID")
     randomId = uuid.uuid4()
-    auth_url = f"https://www.mercadopago.com.ar/auth/authorize?client_id={client_id}&response_type=code&platform_id=mp&state=AUTORIZACIONCLIENTE&redirect_uri={redirect_uri}/{randomId}"
-    return redirect(auth_url)
+    auth_url = f"https://auth.mercadopago.com/authorization?client_id={client_id}&response_type=code&platform_id=mp&state={randomId}&redirect_uri={redirect_uri}"
+    return auth_url
 
 
 @USER_AUTHORIZATION.route("/mercado_pago/token", methods=["GET"])

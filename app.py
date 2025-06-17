@@ -47,9 +47,6 @@ CORS(app,
     methods=["GET", "POST", "OPTIONS","PATCH","DELETE"],
     supports_credentials=True)
 
-# print("SocketIO instance:", socketio)
-  
-
 app.register_blueprint(SIGNUP_BP)
 app.register_blueprint(LOGIN_BP)
 app.register_blueprint(GET_USER)

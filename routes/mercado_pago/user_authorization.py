@@ -6,7 +6,7 @@ load_dotenv()
 
 CLIENT_ID = os.getenv("MP_CLIENT_ID")
 CLIENT_SECRET = os.getenv("MP_CLIENT_SECRET")
-REDIRECT_URI = "https://turnosya-backend.onrender.com/mercadopago/callback"
+REDIRECT_URI = "https://turnosya-backend.onrender.com"
 
 USER_AUTHORIZATION = Blueprint("USER_AUTHORIZATION", __name__)
 

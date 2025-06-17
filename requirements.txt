@@ -40,6 +40,7 @@ MarkupSafe==3.0.2
 msgpack==1.1.0
 ngrok==1.4.0
 packaging==25.0
+pkce==1.0.3
 proto-plus==1.26.1
 protobuf==6.31.1
 pyasn1==0.6.1

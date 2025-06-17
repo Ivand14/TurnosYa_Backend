@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, jsonify,redirect
+from flask import Blueprint, jsonify,redirect,request
 import mercadopago
 from dotenv import load_dotenv
 import uuid
@@ -43,7 +43,14 @@ def conect_to_salesman():
 
 
 @USER_AUTHORIZATION.route("/mercado_pago/token", methods=["GET"])
-def obtener_access_token(code):
+
+
+@USER_AUTHORIZATION.route("/mercado_pago/token", methods=["GET"])
+def get_access_token():
+    code = request.args.get("code")
+    if not code:
+        return jsonify({"error": "Código de autorización no proporcionado"}), 400
+
     token_url = "https://api.mercadopago.com/oauth/token"
     payload = {
         "client_id": MP_CLIENT_ID,
@@ -54,5 +61,6 @@ def obtener_access_token(code):
     }
 
     response = requests.post(token_url, data=payload)
-    return response.json()  
+    return jsonify(response.json())
+
 

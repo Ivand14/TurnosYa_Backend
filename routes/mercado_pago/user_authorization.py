@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, redirect
 import requests
 
 client_id = os.getenv("MP_CLIENT_ID")
-redirect_uri = "https://turnosya-backend.onrender.com/callback"
+redirect_uri = "https://turnosya-backend.onrender.com"
 state = secrets.token_hex(16) 
 
 auth_url = f"https://auth.mercadopago.com/authorization?client_id={client_id}&response_type=code&platform_id=mp&state={state}&redirect_uri={redirect_uri}"
@@ -33,32 +33,32 @@ def mercadopago_callback():
     response = requests.post(token_url, data=payload)
     return jsonify(response.json())
 
-access_token = os.getenv("MP_ACCESS_TOKEN_PROD")  # Token de tu aplicación en Mercado Pago
-wallet_url = "https://api.mercadopago.com/v2/wallet_connect/agreements"
-headers = {
-    "Authorization": f"Bearer {access_token}",
-    "Content-Type": "application/json"
-}
-
-payload = {
-    "return_uri": "https://turnosya-backend.onrender.com/success",  # URL de retorno
-    "external_flow_id": "EXTERNAL_FLOW_ID",
-    "external_user": {
-        "id": "user_test_123",
-        "description": "Cuenta de prueba"
-    },
-    "agreement_data": {
-        "validation_amount": 3.14,
-        "description": "Vinculación de Wallet Connect"
-    }
-}
-
-response = requests.post(wallet_url, headers=headers, json=payload)
-data = response.json()
-print(data)
 
 @USER_AUTHORIZATION.route("/wallet_connect", methods=["GET"])
 def wallet_connect():
+    access_token = os.getenv("MP_ACCESS_TOKEN_PROD")  # Token de tu aplicación en Mercado Pago
+    wallet_url = "https://api.mercadopago.com/v2/wallet_connect/agreements"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "return_uri": "https://turnosya-backend.onrender.com/success",  # URL de retorno
+        "external_flow_id": "EXTERNAL_FLOW_ID",
+        "external_user": {
+            "id": "user_test_123",
+            "description": "Cuenta de prueba"
+        },
+        "agreement_data": {
+            "validation_amount": 3.14,
+            "description": "Vinculación de Wallet Connect"
+        }
+    }
+
+    response = requests.post(wallet_url, headers=headers, json=payload)
+    data = response.json()
+    print(data)
     response = requests.post(wallet_url, headers=headers, json=payload)
     data = response.json()
 

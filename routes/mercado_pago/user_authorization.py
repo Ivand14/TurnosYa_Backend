@@ -37,7 +37,7 @@ def mercado_pago_login():
 def conect_to_salesman():
     client_id = os.getenv("MP_CLIENT_ID")
     state = secrets.token_hex(16)
-    auth_url = f"https://auth.mercadopago.com/authorization?client_id={client_id}&response_type=code&platform_id=mp&state={state}&redirect_uri={redirect_uri}&scope=offline_access"
+    auth_url = f"https://www.mercadopago.com.ar/auth/authorize?client_id={client_id}&response_type=code&platform_id=mp&state=AUTORIZACIONCLIENTE&redirect_uri={redirect_uri}"
     return redirect(auth_url)
 
 

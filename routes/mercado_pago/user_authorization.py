@@ -1,32 +1,37 @@
-from flask import Blueprint,request,jsonify
-# from config.firebase_service import db
-# from config.socket_config import socketio
-from dotenv import load_dotenv
+from flask import Blueprint, request, jsonify, redirect
 import requests
-load_dotenv()
-import os
-# import uuid
+from config.settings import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
 
+USER_AUTHORIZATION = Blueprint("USER_AUTHORIZATION", __name__)
 
-USER_AUTHORIZATION = Blueprint("USER_AUTHORIZATION",__name__)
+# 🔹 URL de autorización para que los vendedores se conecten
+@USER_AUTHORIZATION.route("/mercado_pago_login", methods=["GET"])
+def mercado_pago_login():
+    auth_url = f"https://auth.mercadopago.com/authorization?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}"
+    return redirect(auth_url)
 
-@USER_AUTHORIZATION.route("/mercado_pago_authorization", methods=["GET"])
-def mercado_pago_user_authorization():
-    client_id = os.environ.get("MP_CLIENT_ID")
-    client_secret = os.environ.get("MP_CLIENT_SECRET")
-    if not client_id:
-        return jsonify({"error": "Client ID no encontrado"}), 400
-
+# 🔹 Callback que recibe el código y solicita el Access Token
+@USER_AUTHORIZATION.route("/mercadopago/callback", methods=["GET"])
+def mercadopago_callback():
     code = request.args.get("code")
+    
+    print(code)
+    
+    if not code:
+        return jsonify({"error": "Código de autorización no recibido"}), 400
+
     token_url = "https://api.mercadopago.com/oauth/token"
     payload = {
-        "client_id": client_id,
-        "client_secret": client_secret,
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
         "grant_type": "authorization_code",
         "code": code,
-        "redirect_uri": "https://a736-191-81-179-138.ngrok-free.app/mercadopago/callback"
+        "redirect_uri": REDIRECT_URI
     }
-
+    
     response = requests.post(token_url, data=payload)
+    print(response)
     data = response.json()
-    return data 
+    print(data)
+
+    return jsonify(data)

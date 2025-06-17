@@ -1,15 +1,13 @@
-import os
-import secrets
-from flask import Blueprint, request, jsonify, redirect
-import requests
+
+from flask import Blueprint, jsonify
 import mercadopago
 
-sdk = mercadopago.SDK("MP_ACCESS_TOKEN_PROD")
 
 USER_AUTHORIZATION = Blueprint("USER_AUTHORIZATION", __name__)
 
 @USER_AUTHORIZATION.route("/mercado_pago", methods=["GET"])
 def mercado_pago_login():
+    sdk = mercadopago.SDK("MP_ACCESS_TOKEN_PROD")
     preference_data = {
       # the "purpose": "wallet_purchase", allows only logged in payments
       # to allow guest payments, you can omit this property

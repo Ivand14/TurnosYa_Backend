@@ -6,19 +6,21 @@ import requests
 
 load_dotenv()
 
+# Credenciales de Mercado Pago
 AUTH_URL = "https://auth.mercadopago.com/authorization"
 CLIENT_ID = os.getenv("MP_CLIENT_ID")
-CLIENT_SECRET = os.getenv("MP_CLIENT_SECRET")
+CLIENT_SECRET = os.getenv("MP_CLIENT_SECRET")  # ¡Corrección aquí!
 REDIRECT_URI = "https://turnosya-backend.onrender.com/oauth/callback"
 redirect_url = f"{AUTH_URL}?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}"
 
 USER_AUTHORIZATION = Blueprint("USER_AUTHORIZATION", __name__)
 
+# 1️⃣ Redirigir al usuario para autorizar su cuenta
 @USER_AUTHORIZATION.route("/mercado_pago")
 def mercado_pago():
     return redirect(redirect_url)
 
-# 1️⃣ Capturar el código de autorización
+# 2️⃣ Capturar el código de autorización
 @USER_AUTHORIZATION.route("/oauth/callback")
 def oauth_callback():
     authorization_code = request.args.get("code")
@@ -32,7 +34,7 @@ def oauth_callback():
 
     return jsonify({"access_token": access_token})
 
-# 2️⃣ Obtener el Access Token del vendedor
+# 3️⃣ Obtener el Access Token del vendedor
 def get_access_token(authorization_code):
     url = "https://api.mercadopago.com/oauth/token"
     data = {
@@ -45,9 +47,16 @@ def get_access_token(authorization_code):
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
     response = requests.post(url, data=data, headers=headers)
-    return response.json().get("access_token")
 
-# 3️⃣ Crear pago con el Access Token del vendedor
+    # Manejo de errores con logs
+    response_data = response.json()
+    if response.status_code != 200:
+        print(f"Error al obtener Access Token: {response_data}")  # Debugging
+        return None
+    
+    return response_data.get("access_token")
+
+# 4️⃣ Crear pago con el Access Token del vendedor
 @USER_AUTHORIZATION.route("/oauth/create-payment", methods=["POST"])
 def create_payment():
     access_token = request.json.get("access_token")  # Recibir el token del vendedor
@@ -65,4 +74,5 @@ def create_payment():
         }
     }
     payment = sdk.payment().create(payment_data)
+    
     return jsonify(payment["response"])

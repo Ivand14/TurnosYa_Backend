@@ -49,8 +49,8 @@ def get_access_token(authorization_code):
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
     response = requests.post(url, data=data, headers=headers)
-    print(response)
-    return response.json().get("access_token")
+    print(response.json())
+    return jsonify({"details":response.json()})
 
 @USER_AUTHORIZATION.route("/oauth/create-payment", methods=["POST"])
 def create_payment():

@@ -57,10 +57,10 @@ def wallet_connect():
     }
 
     response = requests.post(wallet_url, headers=headers, json=payload)
-    data = response.json()
+    data = jsonify(response.json())
     print(data)
     response = requests.post(wallet_url, headers=headers, json=payload)
-    data = response.json()
+    data = jsonify(response.json())
 
     if "agreement_uri" in data:
         return redirect(data["agreement_uri"]) 

@@ -16,7 +16,7 @@ USER_AUTHORIZATION = Blueprint("USER_AUTHORIZATION", __name__)
 
 @USER_AUTHORIZATION.route("/mercado_pago")
 def mercado_pago():
-    return jsonify({"message": "Endpoint correcto para Mercado Pago"})
+    return redirect(redirect_url)
 
 # 1️⃣ Capturar el código de autorización
 @USER_AUTHORIZATION.route("/oauth/callback")

@@ -2,7 +2,6 @@ import firebase_admin
 from firebase_admin import credentials,firestore
 
 import json
-import os
 
 secret_path = "/etc/secrets/turnos_ya.json"
 

@@ -18,9 +18,11 @@ USER_AUTHORIZATION = Blueprint("USER_AUTHORIZATION", __name__)
 def mercado_pago():
     return redirect(redirect_url)
 
-# 1️⃣ Capturar el código de autorización
 @USER_AUTHORIZATION.route("/oauth/callback")
 def oauth_callback():
+    ''''
+        capturar el codigo de autorizacion
+    '''
     authorization_code = request.args.get("code")
     if not authorization_code:
         return jsonify({"error": "No se recibió código de autorización"}), 400
@@ -32,8 +34,10 @@ def oauth_callback():
 
     return jsonify({"access_token": access_token})
 
-# 2️⃣ Obtener el Access Token del vendedor
 def get_access_token(authorization_code):
+    ''''
+    Obtener el Access Token del vendedor
+    '''
     url = "https://api.mercadopago.com/oauth/token"
     data = {
         "client_id": CLIENT_ID,
@@ -45,11 +49,14 @@ def get_access_token(authorization_code):
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
     response = requests.post(url, data=data, headers=headers)
+    print(response)
     return response.json().get("access_token")
 
-# 3️⃣ Crear pago con el Access Token del vendedor
 @USER_AUTHORIZATION.route("/oauth/create-payment", methods=["POST"])
 def create_payment():
+    '''
+     Crear pago con el Access Token del vendedor
+     '''
     access_token = request.json.get("access_token")  # Recibir el token del vendedor
     if not access_token:
         return jsonify({"error": "Falta access token"}), 400

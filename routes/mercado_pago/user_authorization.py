@@ -5,7 +5,7 @@ import requests
 
 client_id = os.getenv("MP_CLIENT_ID")
 redirect_uri = "https://turnosya-backend.onrender.com/callback"
-state = secrets.token_hex(16)  # Genera un identificador aleatorio
+state = secrets.token_hex(16) 
 
 auth_url = f"https://auth.mercadopago.com/authorization?client_id={client_id}&response_type=code&platform_id=mp&state={state}&redirect_uri={redirect_uri}"
 
@@ -33,7 +33,7 @@ def mercadopago_callback():
     response = requests.post(token_url, data=payload)
     return jsonify(response.json())
 
-access_token = os.getenv("MP_ACCESS_TOKEN")  # Token de tu aplicación en Mercado Pago
+access_token = os.getenv("MP_ACCESS_TOKEN_PROD")  # Token de tu aplicación en Mercado Pago
 wallet_url = "https://api.mercadopago.com/v2/wallet_connect/agreements"
 headers = {
     "Authorization": f"Bearer {access_token}",

@@ -1,6 +1,12 @@
 from flask import Blueprint, request, jsonify, redirect
 import requests
-from config.settings import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+CLIENT_ID = os.getenv("MP_CLIENT_ID")
+CLIENT_SECRET = os.getenv("MP_CLIENT_SECRET")
+REDIRECT_URI = "https://turnosya-backend.onrender.com/mercadopago/callback"
 
 USER_AUTHORIZATION = Blueprint("USER_AUTHORIZATION", __name__)
 

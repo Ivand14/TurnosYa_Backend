@@ -24,6 +24,8 @@ def oauth_callback():
         capturar el codigo de autorizacion
     '''
     authorization_code = request.args.get("code")
+    print("authorization_code",authorization_code)
+    
     if not authorization_code:
         return jsonify({"error": "No se recibió código de autorización"}), 400
     
@@ -32,8 +34,8 @@ def oauth_callback():
     if not access_token:
         return jsonify({"error": "No se pudo obtener access token"}), 400
 
-    return jsonify({"access_token": access_token})
-
+    
+    
 def get_access_token(authorization_code):
     ''''
     Obtener el Access Token del vendedor
@@ -50,9 +52,16 @@ def get_access_token(authorization_code):
 
     response = requests.post(url, data=data, headers=headers)
     access_token_data = response.json()
+    
+    print("access_token_data",access_token_data)
+    
     if access_token_data and "access_token" in access_token_data and access_token_data["access_token"]:
         return jsonify({"message":"token del vendedor registrado con exito","status":200})
-    return access_token_data
+    
+    return jsonify({
+        "status":200,
+        "details":access_token_data
+    })
 
 @USER_AUTHORIZATION.route("/oauth/create-payment", methods=["POST"])
 def create_payment():

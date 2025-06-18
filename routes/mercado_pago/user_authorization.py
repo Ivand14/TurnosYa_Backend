@@ -16,10 +16,13 @@ USER_AUTHORIZATION = Blueprint("USER_AUTHORIZATION", __name__)
 
 @USER_AUTHORIZATION.route("/mercado_pago")
 def mercado_pago():
+    business_id = request.args.get("businessId")
+    redirect_url = f"{AUTH_URL}?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&state={business_id}"
     return redirect(redirect_url)
 
+
 @USER_AUTHORIZATION.route("/oauth/callback")
-def oauth_callback():
+def oauth_callback(businessId):
     ''''
         capturar el codigo de autorizacion
     '''
@@ -30,13 +33,13 @@ def oauth_callback():
         return jsonify({"error": "No se recibió código de autorización"}), 400
     
     # Obtener Access Token con el código recibido
-    access_token = get_access_token(authorization_code)
+    access_token = get_access_token(authorization_code,businessId)
     if not access_token:
         return jsonify({"error": "No se pudo obtener access token"}), 400
 
     
     
-def get_access_token(authorization_code):
+def get_access_token(authorization_code,businessId):
     ''''
     Obtener el Access Token del vendedor
     '''

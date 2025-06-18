@@ -22,12 +22,14 @@ def mercado_pago():
 
 
 @USER_AUTHORIZATION.route("/oauth/callback")
-def oauth_callback(businessId):
+def oauth_callback():
     ''''
         capturar el codigo de autorizacion
     '''
     authorization_code = request.args.get("code")
+    businessId = request.args.get("state")
     print("authorization_code",authorization_code)
+    print("businessId",businessId)
     
     if not authorization_code:
         return jsonify({"error": "No se recibió código de autorización"}), 400

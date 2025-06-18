@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, redirect, request
 import mercadopago
 from dotenv import load_dotenv
 import requests
+from config.firebase_service import db
 
 load_dotenv()
 
@@ -28,8 +29,7 @@ def oauth_callback():
     '''
     authorization_code = request.args.get("code")
     businessId = request.args.get("state")
-    print("authorization_code",authorization_code)
-    print("businessId",businessId)
+
     
     if not authorization_code:
         return jsonify({"error": "No se recibió código de autorización"}), 400
@@ -38,6 +38,8 @@ def oauth_callback():
     access_token = get_access_token(authorization_code,businessId)
     if not access_token:
         return jsonify({"error": "No se pudo obtener access token"}), 400
+    
+    return redirect(f"http://localhost:8080/admin-dashboard/{businessId}")
 
     
     
@@ -62,6 +64,26 @@ def get_access_token(authorization_code,businessId):
     
     if access_token_data and "access_token" in access_token_data and access_token_data["access_token"]:
         return jsonify({"message":"token del vendedor registrado con exito","status":200})
+    
+    business_query = db.collection("empresas").where("id", "==", businessId)
+    docs = business_query.stream()
+
+    empresa_doc = next(docs, None)
+
+    if not empresa_doc:
+        return jsonify({"error": "Empresa no encontrada"}), 404
+
+    
+    empresa_doc.reference.update({
+        "mercado_pago": {
+            "user_id": access_token_data["user_id"],
+            "access_token": access_token_data["access_token"],
+            "refresh_token": access_token_data["refresh_token"],
+            "expires_in": access_token_data["expires_in"],
+            "public_key": access_token_data["public_key"],
+            "live_mode": access_token_data["live_mode"]
+        }
+    })
     
     return jsonify({
         "status":200,

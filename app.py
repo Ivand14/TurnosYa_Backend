@@ -43,7 +43,7 @@ app.secret_key = os.environ.get("SUPER_SECRET_KEY")
 socketio.init_app(app)  
 
 
-CORS(app, origins=["http://localhost:8080"])
+CORS(app, origins=["http://localhost:8080","https://turno-ya-ivand14s-projects.vercel.app"])
 
 
 app.register_blueprint(SIGNUP_BP)

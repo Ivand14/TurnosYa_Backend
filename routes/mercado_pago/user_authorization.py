@@ -137,24 +137,4 @@ def get_access_token(authorization_code, businessId):
     })
 
 
-@USER_AUTHORIZATION.route("/oauth/create-payment", methods=["POST"])
-def create_payment():
-    '''
-     Crear pago con el Access Token del vendedor
-     '''
-    access_token = request.json.get("access_token")  # Recibir el token del vendedor
-    if not access_token:
-        return jsonify({"error": "Falta access token"}), 400
-    
-    sdk = mercadopago.SDK(access_token)
-    payment_data = {
-        "transaction_amount": 100,
-        "token": "TOKEN_GENERADO",
-        "description": "Compra de prueba",
-        "payment_method_id": "visa",
-        "payer": {
-            "email": "comprador@email.com"
-        }
-    }
-    payment = sdk.payment().create(payment_data)
-    return jsonify(payment["response"])
+

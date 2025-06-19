@@ -30,7 +30,7 @@ def preferences_mp(businessId):
     body = {
         "items": [
             {
-                "title": data.get("title", "Producto genérico"),
+                "title": data.get("title"),
                 "quantity": 1,
                 "unit_price": float(data.get("price", 100)),
                 "currency_id": "ARS"

@@ -43,10 +43,7 @@ app.secret_key = os.environ.get("SUPER_SECRET_KEY")
 socketio.init_app(app)  
 
 
-CORS(app,
-     origins=["http://localhost:8080"], 
-     methods=["GET", "POST", "OPTIONS", "PATCH", "DELETE"],
-     supports_credentials=True)
+CORS(app, origins=["http://localhost:8080"])
 
 
 app.register_blueprint(SIGNUP_BP)

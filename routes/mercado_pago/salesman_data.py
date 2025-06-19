@@ -17,7 +17,7 @@ def salesman_data(businessId):
                 "status":400,
                 "message":"Esta cuenta no esta vinculada a mercado pago"
             })
-        access_token = doc["mercado_pago"]["access_token"]
+        access_token = business["mercado_pago"]["access_token"]
     
     headers = {
         "Authorization": f"Bearer {access_token}"

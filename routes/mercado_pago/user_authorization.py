@@ -85,7 +85,8 @@ def get_access_token(authorization_code, businessId):
                 "expires_in": access_token_data["expires_in"],
                 "public_key": access_token_data["public_key"],
                 "live_mode": access_token_data["live_mode"]
-            }
+            },
+            "mercado_pago_connect":True
         })
 
     return jsonify({

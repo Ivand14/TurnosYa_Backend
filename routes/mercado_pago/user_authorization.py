@@ -1,6 +1,5 @@
 import os
 from flask import Blueprint, jsonify, redirect, request
-import mercadopago
 from dotenv import load_dotenv
 import requests
 from config.firebase_service import db

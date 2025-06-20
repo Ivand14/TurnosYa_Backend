@@ -1,3 +1,5 @@
+import eventlet
+eventlet.monkey_patch()
 from flask import Flask
 from flask_cors import CORS
 from routes.auth.users.register import SIGNUP_BP
@@ -40,14 +42,20 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("SUPER_SECRET_KEY")
 
-socketio.init_app(app)
+socketio.init_app(app, cors_allowed_origins=[
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "https://turno-ya-ivand14s-projects.vercel.app",
+    "https://turno-ya.vercel.app" 
+])
+
 
 
 CORS(app, origins=[
-    "http://localhost:8080",                  # Para tu desarrollo local
-    "http://127.0.0.1:8080",                  # Si tu frontend en local usa esta IP
-    "https://turno-ya-ivand14s-projects.vercel.app", # Tu frontend en Vercel (proyecto)
-    "https://turno-ya.vercel.app/"            # Tu frontend en Vercel (dominio principal)
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "https://turno-ya-ivand14s-projects.vercel.app",
+    "https://turno-ya.vercel.app" 
 ])
 
 

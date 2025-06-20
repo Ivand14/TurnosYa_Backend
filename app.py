@@ -40,12 +40,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("SUPER_SECRET_KEY")
 
-socketio.init_app(app, cors_allowed_origins=[
-    "http://localhost:8080",                  # Para tu desarrollo local
-    "http://127.0.0.1:8080",                  # Si tu frontend en local usa esta IP
-    "https://turno-ya-ivand14s-projects.vercel.app", # Tu frontend en Vercel (proyecto)
-    "https://turno-ya.vercel.app/"            # Tu frontend en Vercel (dominio principal)
-])
+socketio.init_app(app)
 
 
 CORS(app, origins=[

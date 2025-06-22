@@ -1,10 +1,11 @@
 from flask import Blueprint,jsonify,request
 from config.firebase_service import db
+from flask_cors import cross_origin
 import requests
 
 PREFERENCES_MP = Blueprint("PREFERENCES_MP",__name__)
 
-
+@cross_origin
 @PREFERENCES_MP.route("/payment/create_preferences/<businessId>",methods=["POST","OPTIONS"])
 def preferences_mp(businessId):
     data = request.json

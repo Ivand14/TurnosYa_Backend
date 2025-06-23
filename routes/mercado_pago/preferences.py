@@ -1,26 +1,25 @@
-from flask import Blueprint,jsonify,request
+from flask import Blueprint, jsonify, request
 from config.firebase_service import db
 import requests
 
-PREFERENCES_MP = Blueprint("PREFERENCES_MP",__name__)
+PREFERENCES_MP = Blueprint("PREFERENCES_MP", __name__)
 
-@PREFERENCES_MP.route("/payment/create_preferences/<businessId>",methods=["POST","OPTIONS"])
+@PREFERENCES_MP.route("/payment/create_preferences/<businessId>", methods=["POST", "OPTIONS"])
 def preferences_mp(businessId):
+    if request.method == "OPTIONS":
+        return '', 200
+
     data = request.json
-    
-    docs = db.collection("empresas").where("id","==",businessId).stream()
+
+    docs = db.collection("empresas").where("id", "==", businessId).stream()
     business_doc = next(docs, None)
-    
+
+    if not business_doc:
+        return jsonify({"error": "Empresa no encontrada"}), 404
+
     access_token = business_doc.to_dict().get("mercado_pago", {}).get("access_token")
-    
     if not access_token:
         return jsonify({"error": "Vendedor no conectado a MP"}), 400
-    
-    if not docs:
-        jsonify({
-            "status":500,
-            "message":"Empresa no encontrada"
-        })
 
     headers = {
         "Authorization": f"Bearer {access_token}",

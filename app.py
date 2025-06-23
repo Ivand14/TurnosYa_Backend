@@ -1,9 +1,9 @@
 
 from flask import Flask
 from flask_cors import CORS
-from flask_socketio import SocketIO
 import os
 from dotenv import load_dotenv
+from config.socket_config import socketio
 
 # Blueprints
 from routes.auth.users.register import SIGNUP_BP
@@ -46,8 +46,7 @@ app.secret_key = os.environ.get("SUPER_SECRET_KEY")
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 # 🔌 SocketIO con Gevent
-
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
+socketio.init_app(app, cors_allowed_origins="*", async_mode="eventlet")
 
 # 👂 Eventos de conexión/desconexión
 @socketio.on("connect")

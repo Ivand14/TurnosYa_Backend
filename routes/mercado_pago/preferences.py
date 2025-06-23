@@ -18,6 +18,8 @@ def preferences_mp(businessId):
         return jsonify({"error": "Empresa no encontrada"}), 404
 
     access_token = business_doc.to_dict().get("mercado_pago", {}).get("access_token")
+    print("access_token",access_token)
+    
     if not access_token:
         return jsonify({"error": "Vendedor no conectado a MP"}), 400
 

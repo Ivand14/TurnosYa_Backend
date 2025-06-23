@@ -1,5 +1,4 @@
-import eventlet
-eventlet.monkey_patch()
+
 from flask import Flask
 from flask_cors import CORS
 from routes.auth.users.register import SIGNUP_BP
@@ -42,7 +41,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("SUPER_SECRET_KEY")
 
-socketio.init_app(app, cors_allowed_origins=["https://turno-ya.vercel.app"])
+socketio.init_app(app,async_mode="gevent", cors_allowed_origins=["https://turno-ya.vercel.app"])
 
 CORS(app, resources={r"/*": {"origins": {"https://turno-ya.vercel.app"}}}, supports_credentials=True)
 

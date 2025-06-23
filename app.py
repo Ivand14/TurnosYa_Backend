@@ -39,8 +39,8 @@ from routes.mercado_pago.salesman_data import SALESMAN_DATA
 load_dotenv()
 
 app = Flask(__name__)
-secret_key = os.environ.get("SUPER_SECRET_KEY")
-app.config[secret_key] = 'secret!'
+app.secret_key = os.environ.get("SUPER_SECRET_KEY")
+
 
 # 🔐 CORS global
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)

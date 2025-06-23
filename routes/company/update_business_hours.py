@@ -2,11 +2,9 @@ from flask import Blueprint, jsonify, request
 from config import firebase_service
 from config.socket_config import socketio
 from flask_socketio import emit
-from flask_cors import cross_origin
 
 UPDATE_BUSINESS_SCHEDULE = Blueprint("UPDATE_BUSINESS_SCHEDULE", __name__)
 
-@cross_origin
 @UPDATE_BUSINESS_SCHEDULE.route("/update_business_hours", methods=["PATCH"])
 def update_business_hours():
     """ Maneja la actualización desde una solicitud HTTP """

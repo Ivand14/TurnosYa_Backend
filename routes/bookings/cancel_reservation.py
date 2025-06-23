@@ -1,10 +1,8 @@
 from flask import Blueprint, jsonify, request
 from config import firebase_service
 from config.socket_config import socketio
-from flask_cors import cross_origin
 DELETE_BOOKING = Blueprint("DELETE_BOOKING", __name__)
 
-@cross_origin
 @DELETE_BOOKING.route("/cancel_booking/<bookingId>", methods=["DELETE"])
 def cancel_booking(bookingId):
     db = firebase_service.db

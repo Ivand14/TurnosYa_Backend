@@ -1,7 +1,6 @@
 import os
 from flask import Blueprint, jsonify, redirect, request
 from dotenv import load_dotenv
-from flask_cors import cross_origin
 import requests
 from config.firebase_service import db
 
@@ -15,14 +14,14 @@ redirect_url = f"{AUTH_URL}?client_id={CLIENT_ID}&response_type=code&redirect_ur
 
 USER_AUTHORIZATION = Blueprint("USER_AUTHORIZATION", __name__)
 
-@cross_origin
+
 @USER_AUTHORIZATION.route("/mercado_pago")
 def mercado_pago():
     business_id = request.args.get("businessId")
     redirect_url = f"{AUTH_URL}?client_id={CLIENT_ID}&response_type=code&redirect_uri={REDIRECT_URI}&state={business_id}"
     return redirect(redirect_url)
 
-@cross_origin
+
 @USER_AUTHORIZATION.route("/oauth/callback")
 def oauth_callback():
     authorization_code = request.args.get("code")

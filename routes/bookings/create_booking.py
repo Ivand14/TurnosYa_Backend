@@ -1,11 +1,9 @@
 from flask import Blueprint, jsonify, request
 from config import firebase_service
 from config.socket_config import socketio
-from flask_cors import cross_origin
 
 CREATE_BOOKING = Blueprint("CREATE_BOOKING", __name__)
 
-@cross_origin
 @CREATE_BOOKING.route("/create_booking", methods=["POST"])
 def create_booking():
     try:

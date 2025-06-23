@@ -1,12 +1,16 @@
+from gevent import monkey
+monkey.patch_all() 
 
 from flask import Flask
 from flask_cors import CORS
-from routes.auth.users.register import SIGNUP_BP
-from config import firebase_service
+from flask_socketio import SocketIO
 import os
+from dotenv import load_dotenv
+
+# Blueprints
+from routes.auth.users.register import SIGNUP_BP
 from routes.auth.users.login import LOGIN_BP
 from routes.auth.users.userData import GET_USER
-# from routes.auth.reset_pass import RECOVER_PASS
 from routes.auth.business.register_company import REGISTER_COMPANY
 from routes.company.get_all_business import ALL_BUSINESS
 from routes.company.get_business_id import GET_BUSINESS_ID
@@ -33,18 +37,19 @@ from routes.bookings.cancel_reservation import DELETE_BOOKING
 from routes.company.delete_employee import DELETE_EMPLOYEE
 from routes.mercado_pago.user_authorization import USER_AUTHORIZATION
 from routes.mercado_pago.salesman_data import SALESMAN_DATA
-from dotenv import load_dotenv
-from config.socket_config import socketio
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SUPER_SECRET_KEY")
 
-socketio.init_app(app,async_mode="gevent", cors_allowed_origins=["https://turno-ya.vercel.app"])
+# 🔐 CORS global
+CORS(app, resources={r"/*": {"origins": ["https://turno-ya.vercel.app"]}}, supports_credentials=True)
 
-CORS(app, resources={r"/*": {"origins": {"https://turno-ya.vercel.app"}}}, supports_credentials=True)
+# 🔌 SocketIO con Gevent
+socketio = SocketIO(app, cors_allowed_origins=["https://turno-ya.vercel.app"], async_mode="gevent")
 
+# 👂 Eventos de conexión/desconexión
 @socketio.on("connect")
 def handle_connect():
     print("🟢 WebSocket conectado")
@@ -53,20 +58,10 @@ def handle_connect():
 def handle_disconnect():
     print("🔴 WebSocket desconectado")
 
-@app.after_request
-def add_cors_headers(response):
-    response.headers.add("Access-Control-Allow-Origin", "https://turno-ya.vercel.app")
-    response.headers.add("Access-Control-Allow-Credentials", "true")
-    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
-    response.headers.add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
-    return response
-
-
-
+# 🧩 Rutas
 app.register_blueprint(SIGNUP_BP)
 app.register_blueprint(LOGIN_BP)
 app.register_blueprint(GET_USER)
-# app.register_blueprint(RECOVER_PASS)
 app.register_blueprint(REGISTER_COMPANY)
 app.register_blueprint(ALL_BUSINESS)
 app.register_blueprint(GET_BUSINESS_ID)
@@ -96,7 +91,5 @@ app.register_blueprint(SALESMAN_DATA)
 
 @app.route("/")
 def home():
-    return "Servidor Flask activo"
+    return "Servidor Flask activo ✅"
 
-if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

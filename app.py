@@ -45,10 +45,10 @@ secret_key = os.environ.get("SUPER_SECRET_KEY")
 app.config[secret_key] = 'secret!'
 
 # 🔐 CORS global
-CORS(app, resources={r"/*": {"origins": ["http://localhost:8080", "https://turno-ya.vercel.app", "https://*.vercel.app"]}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": ["http://localhost:8080", "https://turno-ya.vercel.app", ]}}, supports_credentials=True)
 
 # 🔌 SocketIO con Gevent
-socketio = SocketIO(app, cors_allowed_origins=["http://localhost:8080", "https://turno-ya.vercel.app", "https://*.vercel.app"], async_mode="gevent")
+socketio = SocketIO(app, cors_allowed_origins=["http://localhost:8080", "https://turno-ya.vercel.app", ], async_mode="gevent")
 
 # 👂 Eventos de conexión/desconexión
 @socketio.on("connect")

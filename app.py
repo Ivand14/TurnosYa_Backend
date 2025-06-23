@@ -46,6 +46,23 @@ socketio.init_app(app, cors_allowed_origins=["https://turno-ya.vercel.app"])
 
 CORS(app, resources={r"/*": {"origins": {"https://turno-ya.vercel.app"}}}, supports_credentials=True)
 
+@socketio.on("connect")
+def handle_connect():
+    print("🟢 WebSocket conectado")
+
+@socketio.on("disconnect")
+def handle_disconnect():
+    print("🔴 WebSocket desconectado")
+
+@app.after_request
+def add_cors_headers(response):
+    response.headers.add("Access-Control-Allow-Origin", "https://turno-ya.vercel.app")
+    response.headers.add("Access-Control-Allow-Credentials", "true")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+    response.headers.add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
+    return response
+
+
 
 app.register_blueprint(SIGNUP_BP)
 app.register_blueprint(LOGIN_BP)
@@ -82,5 +99,5 @@ app.register_blueprint(SALESMAN_DATA)
 def home():
     return "Servidor Flask activo"
 
-if __name__ == '__main__':
-    socketio.run(app, host="0.0.0.0", port=5000, debug=True)
+if __name__ == "__main__":
+    socketio.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

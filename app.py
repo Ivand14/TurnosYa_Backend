@@ -46,7 +46,7 @@ app.secret_key = os.environ.get("SUPER_SECRET_KEY")
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 # 🔌 SocketIO con Gevent
-socketio(app, cors_allowed_origins="*", async_mode="eventlet")
+socketio.init_app(app, cors_allowed_origins="*", async_mode="eventlet")
 # 👂 Eventos de conexión/desconexión
 @socketio.on("connect")
 def handle_connect():

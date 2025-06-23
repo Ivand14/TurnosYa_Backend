@@ -52,11 +52,11 @@ socketio = SocketIO(app, cors_allowed_origins=["http://localhost:8080","https://
 # 👂 Eventos de conexión/desconexión
 @socketio.on("connect")
 def handle_connect():
-    print("🟢 WebSocket conectado")
+    print("🟢 WebSocket conectado",socketio)
 
 @socketio.on("disconnect")
 def handle_disconnect():
-    print("🔴 WebSocket desconectado")
+    print("🔴 WebSocket desconectado",socketio)
 
 # 🧩 Rutas
 app.register_blueprint(SIGNUP_BP)
@@ -95,7 +95,7 @@ def home():
 
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    socketio.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
 
 
 

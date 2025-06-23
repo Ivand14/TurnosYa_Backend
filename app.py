@@ -93,3 +93,9 @@ app.register_blueprint(SALESMAN_DATA)
 def home():
     return "Servidor Flask activo ✅"
 
+
+if __name__ == "__main__":
+    socketio.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
+
+

@@ -44,10 +44,10 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SUPER_SECRET_KEY")
 
 # 🔐 CORS global
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": ["http://localhost:8080","https://turno-ya.vercel.app"]}}, supports_credentials=True)
 
 # 🔌 SocketIO con Gevent
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="gevent")
+socketio = SocketIO(app, cors_allowed_origins=["http://localhost:8080","https://turno-ya.vercel.app"], async_mode="gevent")
 
 # 👂 Eventos de conexión/desconexión
 @socketio.on("connect")

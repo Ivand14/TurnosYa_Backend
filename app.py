@@ -1,3 +1,4 @@
+
 from flask import Flask
 from flask_cors import CORS
 from flask_socketio import SocketIO
@@ -45,7 +46,8 @@ app.config[secret_key] = 'secret!'
 CORS(app, resources={r"/*": {"origins": ["http://localhost:8080", "https://turno-ya.vercel.app", ]}}, supports_credentials=True)
 
 # 🔌 SocketIO con Gevent
-socketio = SocketIO(app, cors_allowed_origins=["http://localhost:8080", "https://turno-ya.vercel.app", ], async_mode="threading")
+
+socketio = SocketIO(app, cors_allowed_origins=["http://localhost:8080", "https://turno-ya.vercel.app"], async_mode="eventlet")
 
 # 👂 Eventos de conexión/desconexión
 @socketio.on("connect")
@@ -93,7 +95,10 @@ def home():
 
 
 if __name__ == "__main__":
+    import eventlet
+    import eventlet.wsgi
     socketio.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
+
 
 
 

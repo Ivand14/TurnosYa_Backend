@@ -1,6 +1,3 @@
-from gevent import monkey
-monkey.patch_all() 
-
 from flask import Flask
 from flask_cors import CORS
 from flask_socketio import SocketIO
@@ -48,7 +45,7 @@ app.config[secret_key] = 'secret!'
 CORS(app, resources={r"/*": {"origins": ["http://localhost:8080", "https://turno-ya.vercel.app", ]}}, supports_credentials=True)
 
 # 🔌 SocketIO con Gevent
-socketio = SocketIO(app, cors_allowed_origins=["http://localhost:8080", "https://turno-ya.vercel.app", ], async_mode="gevent")
+socketio = SocketIO(app, cors_allowed_origins=["http://localhost:8080", "https://turno-ya.vercel.app", ], async_mode="threading")
 
 # 👂 Eventos de conexión/desconexión
 @socketio.on("connect")

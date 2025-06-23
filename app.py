@@ -42,21 +42,9 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("SUPER_SECRET_KEY")
 
-socketio.init_app(app, cors_allowed_origins=[
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
-    "https://turno-ya-ivand14s-projects.vercel.app",
-    "https://turno-ya.vercel.app" 
-])
+socketio.init_app(app, cors_allowed_origins="*")
 
-
-
-CORS(app, origins=[
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
-    "https://turno-ya-ivand14s-projects.vercel.app",
-    "https://turno-ya.vercel.app" 
-])
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 
 app.register_blueprint(SIGNUP_BP)

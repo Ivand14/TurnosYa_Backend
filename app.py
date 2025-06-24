@@ -45,7 +45,7 @@ app.secret_key = os.environ.get("SUPER_SECRET_KEY")
 
 
 # 🔐 CORS global
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # 🔌 SocketIO con Gevent
 socketio.init_app(app, cors_allowed_origins="*", async_mode="gevent")

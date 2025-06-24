@@ -34,6 +34,7 @@ from routes.bookings.cancel_reservation import DELETE_BOOKING
 from routes.company.delete_employee import DELETE_EMPLOYEE
 from routes.mercado_pago.user_authorization import USER_AUTHORIZATION
 from routes.mercado_pago.salesman_data import SALESMAN_DATA
+from routes.mercado_pago.preferences import PREFERENCES_MP
 
 load_dotenv()
 
@@ -86,6 +87,7 @@ app.register_blueprint(DELETE_BOOKING)
 app.register_blueprint(DELETE_EMPLOYEE)
 app.register_blueprint(USER_AUTHORIZATION)
 app.register_blueprint(SALESMAN_DATA)
+app.register_blueprint(PREFERENCES_MP)
 
 @app.route("/")
 def home():

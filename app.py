@@ -1,5 +1,5 @@
-import eventlet
-eventlet.monkey_patch()
+import gevent
+gevent.monkey_patch()
 
 from flask import Flask
 from flask_cors import CORS
@@ -48,7 +48,7 @@ app.secret_key = os.environ.get("SUPER_SECRET_KEY")
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 # 🔌 SocketIO con Gevent
-socketio.init_app(app, cors_allowed_origins="*", async_mode="eventlet")
+socketio.init_app(app, cors_allowed_origins="*", async_mode="gevent")
 # 👂 Eventos de conexión/desconexión
 @socketio.on("connect")
 def handle_connect():

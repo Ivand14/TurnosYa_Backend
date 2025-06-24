@@ -49,6 +49,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 # 🔌 SocketIO con Gevent
 socketio.init_app(app, cors_allowed_origins="*", async_mode="gevent")
+
 # 👂 Eventos de conexión/desconexión
 @socketio.on("connect")
 def handle_connect():

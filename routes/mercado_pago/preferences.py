@@ -38,7 +38,7 @@ def preferences_mp(businessId):
             }
         ],
         "back_urls": {
-            "success": "http://localhost:8080/confirmacion?status=success",
+            "success": f"http://localhost:8080/business/{businessId}",
             "failure": "http://localhost:8080/confirmacion?status=failure",
             "pending": "http://localhost:8080/confirmacion?status=pending"
         },

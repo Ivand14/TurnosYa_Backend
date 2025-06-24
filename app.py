@@ -1,6 +1,3 @@
-from gevent import monkey
-monkey.patch_all()
-
 from flask import Flask
 from flask_cors import CORS
 import os
@@ -96,7 +93,7 @@ def home():
 
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
+    socketio.run(app, host="0.0.0.0", port=int(10000))
 
 
 

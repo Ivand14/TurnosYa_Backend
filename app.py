@@ -35,6 +35,7 @@ from routes.company.delete_employee import DELETE_EMPLOYEE
 from routes.mercado_pago.user_authorization import USER_AUTHORIZATION
 from routes.mercado_pago.salesman_data import SALESMAN_DATA
 from routes.mercado_pago.preferences import PREFERENCES_MP
+from routes.mercado_pago.payment_webhook import PAYMENT_WEBHOOK
 
 load_dotenv()
 
@@ -88,6 +89,7 @@ app.register_blueprint(DELETE_EMPLOYEE)
 app.register_blueprint(USER_AUTHORIZATION)
 app.register_blueprint(SALESMAN_DATA)
 app.register_blueprint(PREFERENCES_MP)
+app.register_blueprint(PAYMENT_WEBHOOK)
 
 @app.route("/")
 def home():

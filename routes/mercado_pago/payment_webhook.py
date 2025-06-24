@@ -25,7 +25,6 @@ def payment_webhook():
     if mp_response.status_code == 200:
         payment_info = mp_response.json()
         print(f"Estado del pago: {payment_info.get('status')}")
-        # Podés guardar esta info en tu base de datos si querés
         return jsonify({'status': payment_info.get('status')}), 200
     else:
         return jsonify({'error': 'No se pudo consultar el estado del pago'}), 500

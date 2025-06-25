@@ -24,7 +24,8 @@ def create_booking():
             "end": data["end"],
             "status": data["status"],
             "paymentStatus": data["paymentStatus"],
-            "notes": data["notes"]
+            "notes": data["notes"],
+            "payment_id":data["payment_id"]
         })
 
         if not doc_ref:

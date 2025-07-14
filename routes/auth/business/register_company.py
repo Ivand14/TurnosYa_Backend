@@ -49,7 +49,8 @@ def register_company():
             "company_type": data.get("businessType"),
             "address": data.get("address"),
             "description": data.get("description"),
-            "logo":company_image_url
+            "logo":company_image_url,
+            "subscriptionPlan": data.get("subscriptionPlan")
         })
         
         print(company_register_db)

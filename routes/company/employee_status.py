@@ -10,7 +10,6 @@ def employee_status():
         employee_id = data.get("id")  
         new_status = data.get("status")
         
-        print(employee_id,new_status)
 
         if not employee_id or not new_status:
             return jsonify({"error": "Falta id o status"}), 400

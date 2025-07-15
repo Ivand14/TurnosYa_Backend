@@ -17,11 +17,13 @@ def status_book():
 
     try:
         booking_ref = db.collection("reservas").where("id","==",booking_id).get()
+        booking_list = list(booking_ref)
 
         if not booking_ref.exists:
             return jsonify({"status": 404, "details": "Reserva no encontrada"}), 404
 
-        booking_ref.reference.update({"status": new_status})
+        for book in booking_list:
+            book.reference.update({"status": new_status})
 
         update_status = {"id": booking_ref.id, **booking_ref.to_dict()}
         socketio.emit("update_status_book", update_status)

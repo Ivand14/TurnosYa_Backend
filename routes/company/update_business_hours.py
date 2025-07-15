@@ -10,7 +10,7 @@ def update_business_hours():
     """ Maneja la actualización desde una solicitud HTTP """
     data = request.json
     db = firebase_service.db
-    print("data",data["schedule"])
+
 
     try:
         update_business_ref = db.collection("horarios_atencion").where("id", "==", data["id"])

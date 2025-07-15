@@ -29,10 +29,7 @@ def status_book():
             {"id": book.id, **book.reference.get().to_dict()} for book in booking_list
         ]
 
-        socketio.emit("update_status_book", {
-            "action": "update",
-            "reservas": update_status
-        })
+        socketio.emit("update_status_book", update_status)
 
         return jsonify({"status": 200, "details": update_status}), 200
 

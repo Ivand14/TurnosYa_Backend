@@ -36,6 +36,7 @@ from routes.mercado_pago.user_authorization import USER_AUTHORIZATION
 from routes.mercado_pago.salesman_data import SALESMAN_DATA
 from routes.mercado_pago.preferences import PREFERENCES_MP
 from routes.mercado_pago.payment_webhook import PAYMENT_WEBHOOK
+from routes.bookings.change_status_book import STATUS_BOOK
 
 load_dotenv()
 
@@ -90,6 +91,7 @@ app.register_blueprint(USER_AUTHORIZATION)
 app.register_blueprint(SALESMAN_DATA)
 app.register_blueprint(PREFERENCES_MP)
 app.register_blueprint(PAYMENT_WEBHOOK)
+app.register_blueprint(STATUS_BOOK)
 
 @app.route("/")
 def home():

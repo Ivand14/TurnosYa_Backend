@@ -7,7 +7,7 @@ STATUS_BOOK = Blueprint("STATUS_BOOK", __name__)
 @STATUS_BOOK.route("/status_book", methods=["PATCH"])
 def status_book():
     db = firebase_service.db
-    data = request.get_json()
+    data = request.json
 
     if not data or "booking_id" not in data or "new_status" not in data:
         return jsonify({"status": 400, "details": "Faltan datos requeridos"}), 400

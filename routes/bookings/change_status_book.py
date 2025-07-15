@@ -26,7 +26,7 @@ def status_book():
             book.reference.update({"status": new_status})
 
         update_status = [
-            {"id": book.id, **book.to_dict()} for book in booking_list
+            {"id": book.id, **book.reference.get().to_dict()} for book in booking_list
         ]
 
         socketio.emit("update_status_book", {

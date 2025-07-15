@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify,request
 from config import firebase_service
 from config.socket_config import socketio
 
-STATUS_BOOK = Blueprint("STATUS_BOOK", __name__)
+STATUS_BOOK = Blueprint("ALL_EMPLOYEE", __name__)
 
 @STATUS_BOOK.route("/status_book", methods=["PATCH"])
 def status_book():
@@ -16,7 +16,7 @@ def status_book():
     new_status = data["new_status"]
 
     try:
-        booking_ref = db.collection("reservas").document(booking_id).get()
+        booking_ref = db.collection("reservas").where("id","==",booking_id).get()
 
         if not booking_ref.exists:
             return jsonify({"status": 404, "details": "Reserva no encontrada"}), 404
@@ -30,5 +30,4 @@ def status_book():
 
     except Exception as e:
         return jsonify({"status": 500, "details": f"Error interno: {e}"}), 500
-
     

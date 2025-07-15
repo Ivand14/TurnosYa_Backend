@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify,request
 from config import firebase_service
 from config.socket_config import socketio
 
-STATUS_BOOK = Blueprint("ALL_EMPLOYEE", __name__)
+STATUS_BOOK = Blueprint("STATUS_BOOK", __name__)
 
 @STATUS_BOOK.route("/status_book", methods=["PATCH"])
 def status_book():

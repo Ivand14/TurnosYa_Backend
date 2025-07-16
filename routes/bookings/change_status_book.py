@@ -33,6 +33,7 @@ def status_book():
             "action":"update",
             "updates":update_status
         })
+        
         return jsonify({"status": 200, "details": update_status}), 200
 
     except Exception as e:

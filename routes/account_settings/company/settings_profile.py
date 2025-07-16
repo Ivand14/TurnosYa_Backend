@@ -4,6 +4,7 @@ from config.socket_config import socketio
 from firebase_admin import storage
 
 SETTINGS_PROFILE = Blueprint("SETTINGS_PROFILE", __name__)
+
 @SETTINGS_PROFILE.route("config/profile",methods=["PATCH"])
 def setting_profile():
     db = firebase_service.db

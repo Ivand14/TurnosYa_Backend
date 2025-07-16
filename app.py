@@ -37,7 +37,7 @@ from routes.mercado_pago.salesman_data import SALESMAN_DATA
 from routes.mercado_pago.preferences import PREFERENCES_MP
 from routes.mercado_pago.payment_webhook import PAYMENT_WEBHOOK
 from routes.bookings.change_status_book import STATUS_BOOK
-from.routes.account_settings.company.settings_profile import SETTINGS_PROFILE
+from routes.account_settings.company.settings_profile import SETTINGS_PROFILE
 
 load_dotenv()
 

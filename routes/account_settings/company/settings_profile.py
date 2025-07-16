@@ -10,7 +10,7 @@ def setting_profile():
     db = firebase_service.db
     data = request.form
     
-    if not data or "booking_id" not in data or "new_status" not in data:
+    if "businessId" in data :
         return jsonify({"status": 400, "details": "Faltan datos requeridos"}), 400
 
     name = data.get("name")

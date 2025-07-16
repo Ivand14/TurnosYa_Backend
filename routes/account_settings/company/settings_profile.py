@@ -33,9 +33,6 @@ def setting_profile():
     if description:
         update_data["description"] = description
     
-    
-
-    
     try:
         # Image Upload
         if file:
@@ -47,7 +44,7 @@ def setting_profile():
             new_url = blob.public_url
             update_data["logo"] = new_url
         
-        profile_doc = db.collection("empresas").where("id","===",business_id).get()
+        profile_doc = db.collection("empresas").where("id","==",business_id).get()
         
         profile_list = list(profile_doc)
         

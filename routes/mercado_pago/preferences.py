@@ -38,9 +38,9 @@ def preferences_mp(businessId):
             }
         ],
         "back_urls": {
-            "success": f"https://turno-ya.vercel.app/business/{businessId}",
-            "failure": "http://https://turno-ya.vercel.app/confirmacion?status=failure",
-            "pending": "https://turno-ya.vercel.app/confirmacion?status=pending"
+            "success": f"https://www.uturns.lat/business/{businessId}",
+            "failure": "http://https://www.uturns.lat/confirmacion?status=failure",
+            "pending": "https://www.uturns.lat/confirmacion?status=pending"
         },
         "auto_return": "approved"
     }

@@ -13,13 +13,13 @@ def delete_mp_auth():
         if not business_id:
             return jsonify({"status": "error", "message": "Falta businessId"}), 400
 
-        business = db.collection("empresas").where("id", "==", business_id).get()
+        empresas = db.collection("empresas").where("id", "==", business_id).get()
 
-        if not business:
+        if not empresas:
             return jsonify({"status": "error", "message": f"No se encontró empresa con ID {business_id}"}), 404
 
-        for buss in business:
-            buss.reference.update({
+        for empresa in empresas:
+            empresa.reference.update({
                 "mercado_pago": firestore.DELETE_FIELD,
                 "mercado_pago_connect": False
             })

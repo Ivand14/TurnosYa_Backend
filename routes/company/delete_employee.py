@@ -14,15 +14,12 @@ def delete_employee():
 
         db = firebase_service.db
         doc_ref = db.collection("employees").document(emp_id)
-        # doc_snapshot = doc_ref.stream()
 
-        # doc_list = list(doc_snapshot) 
 
         if not doc_ref:  
             return jsonify({"status": 404, "details": "Empleado no encontrado"}), 404
 
-        # for doc in doc_list:
-        #     doc.reference.delete()
+
         
         doc_ref.delete()
 

@@ -14,6 +14,7 @@ def setting_profile():
         return jsonify({"status": 400, "details": "Faltan datos requeridos"}), 400
 
     name = data.get("name")
+    email = data.get("email")
     phone = data.get("phone")
     address = data.get("address")
     description = data.get("description")
@@ -25,7 +26,8 @@ def setting_profile():
     # Solo actualizamos si hay valor
     if name:
         update_data["company_name"] = name
-
+    if email:
+        update_data["email"] = email
     if phone:
         update_data["phone"] = phone
     if address:

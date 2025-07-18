@@ -3,6 +3,10 @@ from flask import Blueprint, jsonify, redirect, request
 from dotenv import load_dotenv
 import requests
 from config.firebase_service import db
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 
@@ -118,19 +122,22 @@ def get_access_token(authorization_code, businessId):
 
 
         for doc in docs:
-          doc.reference.update({
-              "mercado_pago": {
-                  "user_id": access_token_data["user_id"],
-                  "access_token": access_token_data["access_token"],
-                  "refresh_token": access_token_data["refresh_token"],
-                  "expires_in": access_token_data["expires_in"],
-                  "public_key": access_token_data["public_key"],
-                  "live_mode": access_token_data["live_mode"]
-              },
-              "mercado_pago_connect": True
-          })
-          post_write = doc.reference.get().to_dict()
-          print("📦 Firestore actualizado:", post_write.get("mercado_pago"))
+          try:
+            doc.reference.update({
+                "mercado_pago": {
+                    "user_id": access_token_data["user_id"],
+                    "access_token": access_token_data["access_token"],
+                    "refresh_token": access_token_data["refresh_token"],
+                    "expires_in": access_token_data["expires_in"],
+                    "public_key": access_token_data["public_key"],
+                    "live_mode": access_token_data["live_mode"]
+                },
+                "mercado_pago_connect": True
+            })
+            logger.info("✅ Firestore actualizado para empresa: %s", doc.id)
+          except Exception as e:
+            logger.error("🔥 Error actualizando Firestore para %s: %s", doc.id, str(e))
+
 
 
         return jsonify({
@@ -144,3 +151,6 @@ def get_access_token(authorization_code, businessId):
             "error": "Excepción inesperada",
             "details": str(e)
         }), 500
+
+
+

@@ -13,7 +13,7 @@ def salesman_data(businessId):
 
     for doc in mp_data:
         business = doc.to_dict()
-        break  # solo tomamos el primero
+        break  
     
     if not business:
         return jsonify({

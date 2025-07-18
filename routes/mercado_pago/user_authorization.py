@@ -75,7 +75,7 @@ def oauth_callback():
         </div>
         <script>
           setTimeout(function() {{
-            window.location.href = "http://localhost:8080/admin-dashboard/{businessId}";
+            window.location.href = "https://www.uturns.lat/admin-dashboard/{businessId}";
           }}, 1800);
         </script>
       </body>
@@ -101,7 +101,7 @@ def get_access_token(authorization_code, businessId):
     response = requests.post(url, data=data, headers=headers)
     access_token_data = response.json()
 
-    print("access_token_data", access_token_data)
+    print("response",response)
 
     if "access_token" not in access_token_data:
         return jsonify({

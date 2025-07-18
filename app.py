@@ -39,7 +39,6 @@ from routes.mercado_pago.payment_webhook import PAYMENT_WEBHOOK
 from routes.bookings.change_status_book import STATUS_BOOK
 from routes.account_settings.company.settings_profile import SETTINGS_PROFILE
 from routes.mercado_pago.delete_mp_auth import DELETE_MP_AUTH
-from routes.notifications.recordatory import RECORDATORY
 
 load_dotenv()
 
@@ -97,7 +96,6 @@ app.register_blueprint(PAYMENT_WEBHOOK)
 app.register_blueprint(STATUS_BOOK)
 app.register_blueprint(SETTINGS_PROFILE)
 app.register_blueprint(DELETE_MP_AUTH)
-app.register_blueprint(RECORDATORY)
 
 
 @app.route("/")

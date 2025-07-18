@@ -31,12 +31,15 @@ def oauth_callback():
     authorization_code = request.args.get("code")
     businessId = request.args.get("state")
 
+    
     if not authorization_code:
         return jsonify({"error": "No se recibió código de autorización"}), 400
-
-    access_token = get_access_token(authorization_code, businessId)
+    
+    # Obtener Access Token con el código recibido
+    access_token = get_access_token(authorization_code,businessId)
     if not access_token:
         return jsonify({"error": "No se pudo obtener access token"}), 400
+    
 
     # HTML con redirección suave
     return f"""
@@ -87,26 +90,7 @@ def oauth_callback():
     """
 
 
-    
-    
-@USER_AUTHORIZATION.route("/oauth/callback")
-def oauth_callback():
-    ''''
-        capturar el codigo de autorizacion
-    '''
-    authorization_code = request.args.get("code")
-    businessId = request.args.get("state")
 
-    
-    if not authorization_code:
-        return jsonify({"error": "No se recibió código de autorización"}), 400
-    
-    # Obtener Access Token con el código recibido
-    access_token = get_access_token(authorization_code,businessId)
-    if not access_token:
-        return jsonify({"error": "No se pudo obtener access token"}), 400
-    
-    return redirect(f"http://localhost:8080/admin-dashboard/{businessId}")
 
     
     

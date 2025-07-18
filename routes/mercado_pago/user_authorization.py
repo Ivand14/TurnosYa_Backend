@@ -144,6 +144,7 @@ def get_access_token(authorization_code, businessId):
         return jsonify({"error": "Empresa no encontrada"}), 404
 
     for doc in empresa_doc:
+      try:
         doc.reference.update({
             "mercado_pago": {
                 "user_id": access_token_data["user_id"],
@@ -154,6 +155,13 @@ def get_access_token(authorization_code, businessId):
                 "live_mode": access_token_data["live_mode"]
             }
         })
+        # Verificación directa
+        updated = doc.reference.get().to_dict()
+        print("✅ Documento actualizado:", updated.get("mercado_pago"))
+      except Exception as err:
+        print("🔥 Error al actualizar Firestore:", err)
+        return jsonify({"error": "No se pudo actualizar Firestore", "details": str(err)}), 500
+
 
     return jsonify({
         "message": "Token del vendedor registrado con éxito",

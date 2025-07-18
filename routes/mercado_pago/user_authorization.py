@@ -74,9 +74,9 @@ def oauth_callback():
           <p>Un momento por favor</p>
         </div>
         <script>
-          # setTimeout(function() {{
-          #   window.location.href = "https://www.uturns.lat/admin-dashboard/{businessId}";
-          # }}, 1800);
+          setTimeout(function() {{
+            window.location.href = "http://localhost:8080/admin-dashboard/{businessId}";
+          }}, 1800);
         </script>
       </body>
     </html>

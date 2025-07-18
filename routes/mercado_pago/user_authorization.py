@@ -102,55 +102,44 @@ def get_access_token(authorization_code, businessId):
         }
 
         response = requests.post(url, data=data, headers=headers)
+        access_token_data = response.json()
 
-        try:
-            access_token_data = response.json()
-        except Exception:
-            print("❌ Error al parsear JSON:", response.text)
-            return {
-                "error": "Respuesta inválida de Mercado Pago",
-                "raw": response.text
-            }, 500
+        print("🔑 access_token_data:", access_token_data)
 
-        required_keys = ["access_token", "user_id", "refresh_token", "expires_in", "public_key", "live_mode"]
-        faltantes = [k for k in required_keys if k not in access_token_data]
+        if "access_token" not in access_token_data or not access_token_data["access_token"]:
+            return jsonify({
+                "error": "No se pudo obtener access token",
+                "details": access_token_data
+            }), 400
 
-        if faltantes:
-            print("❌ Faltan campos en access_token_data:", faltantes)
-            return {
-                "error": "Datos incompletos en la respuesta",
-                "faltantes": faltantes
-            }, 400
+        docs = db.collection("empresas").where("id", "==", businessId).get()
+        if not docs:
+            return jsonify({"error": "Empresa no encontrada"}), 404
 
-        business_query = db.collection("empresas").where("id", "==", businessId)
-        docs = business_query.get()
-        empresa_doc = list(docs)
-
-        if not empresa_doc:
-            return {"error": "Empresa no encontrada"}, 404
-
-        for doc in empresa_doc:
+        for doc in docs:
             doc.reference.update({
                 "mercado_pago": {
-                    key: access_token_data[key] for key in required_keys
+                    "user_id": access_token_data["user_id"],
+                    "access_token": access_token_data["access_token"],
+                    "refresh_token": access_token_data["refresh_token"],
+                    "expires_in": access_token_data["expires_in"],
+                    "public_key": access_token_data["public_key"],
+                    "live_mode": access_token_data["live_mode"]
                 },
                 "mercado_pago_connect": True
             })
+            # Verificar escritura
+            post_write = doc.reference.get().to_dict()
+            print("📦 Firestore actualizado:", post_write.get("mercado_pago"))
 
-        # 🔍 Confirmamos que se haya escrito correctamente
-        doc_check = empresa_doc[0].reference.get().to_dict()
-        if "mercado_pago" not in doc_check:
-            print("❌ No se escribió campo mercado_pago en Firestore")
-            return {"error": "Falló el update en Firestore"}, 500
-
-        return {
+        return jsonify({
             "message": "Token del vendedor registrado con éxito",
             "status": 200
-        }, 200
+        }), 200
 
     except Exception as e:
         print("❌ Error inesperado:", str(e))
-        return {
+        return jsonify({
             "error": "Excepción inesperada",
             "details": str(e)
-        }, 500
+        }), 500

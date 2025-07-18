@@ -112,12 +112,12 @@ def get_access_token(authorization_code, businessId):
                 "details": access_token_data
             }), 400
 
-        docs = db.collection("empresas").where("id", "==", businessId).get()
+        docs = db.collection("empresas").where("id", "==", businessId).stream()
         if not docs:
             return jsonify({"error": "Empresa no encontrada"}), 404
 
         for doc in docs:
-            doc.reference.update({
+            doc.update({
                 "mercado_pago": {
                     "user_id": access_token_data["user_id"],
                     "access_token": access_token_data["access_token"],
@@ -129,7 +129,7 @@ def get_access_token(authorization_code, businessId):
                 "mercado_pago_connect": True
             })
             # Verificar escritura
-            post_write = doc.reference.get().to_dict()
+            post_write = doc.to_dict()
             print("📦 Firestore actualizado:", post_write.get("mercado_pago"))
 
         return jsonify({

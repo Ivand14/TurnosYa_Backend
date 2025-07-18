@@ -38,7 +38,7 @@ def preferences_mp(businessId):
             }
         ],
         "back_urls": {
-            "success": f"https://www.uturns.lat/business/{businessId}",
+            "success": f"http://localhost:8080/business/{businessId}",
             "failure": "https://www.uturns.lat/confirmacion?status=failure",
             "pending": "https://www.uturns.lat/confirmacion?status=pending"
         },

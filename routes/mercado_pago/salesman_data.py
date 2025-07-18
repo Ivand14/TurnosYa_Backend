@@ -39,10 +39,6 @@ def salesman_data(businessId):
     try:
         response = requests.get(url, headers=headers)
         response.raise_for_status()
-        print("Status:", response.status_code)
-        print("Headers:", response.headers)
-        print("Body:", response.text)  # importante
-        print("Content-Type:", response.headers.get("Content-Type"))
     except requests.RequestException as e:
         return jsonify({
             "status": 500,

@@ -139,10 +139,10 @@ def get_access_token(authorization_code, businessId):
                 "mercado_pago_connect": True
             })
 
-        return {
+        return jsonify({
             "message": "Token del vendedor registrado con éxito",
             "status": 200
-        }
+        })
 
     except Exception as e:
         print("❌ Error inesperado:", str(e))

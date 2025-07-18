@@ -89,68 +89,77 @@ def oauth_callback():
 
     
     
+@USER_AUTHORIZATION.route("/oauth/callback")
+def oauth_callback():
+    ''''
+        capturar el codigo de autorizacion
+    '''
+    authorization_code = request.args.get("code")
+    businessId = request.args.get("state")
+
+    
+    if not authorization_code:
+        return jsonify({"error": "No se recibió código de autorización"}), 400
+    
+    # Obtener Access Token con el código recibido
+    access_token = get_access_token(authorization_code,businessId)
+    if not access_token:
+        return jsonify({"error": "No se pudo obtener access token"}), 400
+    
+    return redirect(f"http://localhost:8080/admin-dashboard/{businessId}")
+
+    
+    
 def get_access_token(authorization_code, businessId):
     '''Obtener y guardar el Access Token del vendedor en Firestore'''
-    try:
-        url = "https://api.mercadopago.com/oauth/token"
-        data = {
-            "client_id": CLIENT_ID,
-            "client_secret": CLIENT_SECRET,
-            "grant_type": "authorization_code",
-            "code": authorization_code,
-            "redirect_uri": REDIRECT_URI
-        }
-        headers = {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Accept": "application/json"
-        }
+    
+    url = "https://api.mercadopago.com/oauth/token"
+    data = {
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
+        "grant_type": "authorization_code",
+        "code": authorization_code,
+        "redirect_uri": REDIRECT_URI
+    }
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
-        response = requests.post(url, data=data, headers=headers)
-        access_token_data = response.json()
+    response = requests.post(url, data=data, headers=headers)
+    access_token_data = response.json()
 
-        print("🔑 access_token_data:", access_token_data)
+    print("access_token_data", access_token_data)
 
-        if "access_token" not in access_token_data or not access_token_data["access_token"]:
-            return jsonify({
-                "error": "No se pudo obtener access token",
-                "details": access_token_data
-            }), 400
-
-        docs = list(db.collection("empresas").where("id", "==", businessId).stream())
-        if not docs:
-            return jsonify({"error": "Empresa no encontrada"}), 404
-
-
-        for doc in docs:
-          try:
-            doc.reference.update({
-                "mercado_pago": {
-                    "user_id": access_token_data["user_id"],
-                    "access_token": access_token_data["access_token"],
-                    "refresh_token": access_token_data["refresh_token"],
-                    "expires_in": access_token_data["expires_in"],
-                    "public_key": access_token_data["public_key"],
-                    "live_mode": access_token_data["live_mode"]
-                },
-                "mercado_pago_connect": True
-            })
-            logger.info("✅ Firestore actualizado para empresa: %s", doc.id)
-          except Exception as e:
-            logger.error("🔥 Error actualizando Firestore para %s: %s", doc.id, str(e))
-
-
-
+    if "access_token" not in access_token_data:
         return jsonify({
-            "message": "Token del vendedor registrado con éxito",
-            "status": 200
-        }), 200
+            "error": "No se pudo obtener access token",
+            "details": access_token_data
+        }), 400
 
-    except Exception as e:
-        print("❌ Error inesperado:", str(e))
-        return jsonify({
-            "error": "Excepción inesperada",
-            "details": str(e)
-        }), 500
+    # Buscar empresa en Firestore
+    business_query = db.collection("empresas").where("id", "==", businessId)
+    docs = business_query.get()
+
+    empresa_doc = list(docs)
+
+    if not empresa_doc:
+        return jsonify({"error": "Empresa no encontrada"}), 404
+
+    for doc in empresa_doc:
+        doc.reference.update({
+            "mercado_pago": {
+                "user_id": access_token_data["user_id"],
+                "access_token": access_token_data["access_token"],
+                "refresh_token": access_token_data["refresh_token"],
+                "expires_in": access_token_data["expires_in"],
+                "public_key": access_token_data["public_key"],
+                "live_mode": access_token_data["live_mode"]
+            }
+        })
+
+    return jsonify({
+        "message": "Token del vendedor registrado con éxito",
+        "status": 200
+    })
+
 
 
 

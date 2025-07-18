@@ -112,25 +112,26 @@ def get_access_token(authorization_code, businessId):
                 "details": access_token_data
             }), 400
 
-        docs = db.collection("empresas").where("id", "==", businessId).stream()
+        docs = list(db.collection("empresas").where("id", "==", businessId).stream())
         if not docs:
             return jsonify({"error": "Empresa no encontrada"}), 404
 
+
         for doc in docs:
-            doc.update({
-                "mercado_pago": {
-                    "user_id": access_token_data["user_id"],
-                    "access_token": access_token_data["access_token"],
-                    "refresh_token": access_token_data["refresh_token"],
-                    "expires_in": access_token_data["expires_in"],
-                    "public_key": access_token_data["public_key"],
-                    "live_mode": access_token_data["live_mode"]
-                },
-                "mercado_pago_connect": True
-            })
-            # Verificar escritura
-            post_write = doc.to_dict()
-            print("📦 Firestore actualizado:", post_write.get("mercado_pago"))
+          doc.reference.update({
+              "mercado_pago": {
+                  "user_id": access_token_data["user_id"],
+                  "access_token": access_token_data["access_token"],
+                  "refresh_token": access_token_data["refresh_token"],
+                  "expires_in": access_token_data["expires_in"],
+                  "public_key": access_token_data["public_key"],
+                  "live_mode": access_token_data["live_mode"]
+              },
+              "mercado_pago_connect": True
+          })
+          post_write = doc.reference.get().to_dict()
+          print("📦 Firestore actualizado:", post_write.get("mercado_pago"))
+
 
         return jsonify({
             "message": "Token del vendedor registrado con éxito",

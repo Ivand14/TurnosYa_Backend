@@ -38,53 +38,53 @@ def oauth_callback():
     if not access_token:
         return jsonify({"error": "No se pudo obtener access token"}), 400
 
-    # HTML con redirección suave
-    return f"""
-    <!DOCTYPE html>
-    <html lang="es">
-      <head>
-        <meta charset="UTF-8" />
-        <title>Conectando con tu cuenta...</title>
-        <style>
-          body {{
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f5f5f5;
-          }}
-          .spinner {{
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-right: 12px;
-          }}
-          @keyframes spin {{
-            0% {{ transform: rotate(0deg); }}
-            100% {{ transform: rotate(360deg); }}
-          }}
-        </style>
-      </head>
-      <body>
-        <div style="text-align:center;">
-          <div style="display:flex; justify-content:center; align-items:center; margin-bottom:1rem;">
-            <div class="spinner"></div>
-            <h3 style="margin:0;">Redirigiendo al panel de empresa...</h3>
-          </div>
-          <p>Un momento por favor</p>
-        </div>
-        <script>
-          setTimeout(function() {{
-            window.location.href = "http://localhost:8080/admin-dashboard/{businessId}";
-          }}, 1800);
-        </script>
-      </body>
-    </html>
-    """
+    # # HTML con redirección suave
+    # return f"""
+    # <!DOCTYPE html>
+    # <html lang="es">
+    #   <head>
+    #     <meta charset="UTF-8" />
+    #     <title>Conectando con tu cuenta...</title>
+    #     <style>
+    #       body {{
+    #         font-family: sans-serif;
+    #         display: flex;
+    #         justify-content: center;
+    #         align-items: center;
+    #         height: 100vh;
+    #         background-color: #f5f5f5;
+    #       }}
+    #       .spinner {{
+    #         border: 4px solid #f3f3f3;
+    #         border-top: 4px solid #3498db;
+    #         border-radius: 50%;
+    #         width: 40px;
+    #         height: 40px;
+    #         animation: spin 1s linear infinite;
+    #         margin-right: 12px;
+    #       }}
+    #       @keyframes spin {{
+    #         0% {{ transform: rotate(0deg); }}
+    #         100% {{ transform: rotate(360deg); }}
+    #       }}
+    #     </style>
+    #   </head>
+    #   <body>
+    #     <div style="text-align:center;">
+    #       <div style="display:flex; justify-content:center; align-items:center; margin-bottom:1rem;">
+    #         <div class="spinner"></div>
+    #         <h3 style="margin:0;">Redirigiendo al panel de empresa...</h3>
+    #       </div>
+    #       <p>Un momento por favor</p>
+    #     </div>
+    #     <script>
+    #       setTimeout(function() {{
+    #         window.location.href = "http://localhost:8080/admin-dashboard/{businessId}";
+    #       }}, 1800);
+    #     </script>
+    #   </body>
+    # </html>
+    # """
 
 
     

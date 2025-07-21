@@ -40,6 +40,7 @@ from routes.bookings.change_status_book import STATUS_BOOK
 from routes.account_settings.company.settings_profile import SETTINGS_PROFILE
 from routes.mercado_pago.delete_mp_auth import DELETE_MP_AUTH
 from routes.bookings.get_all_bookings import GET_ALL_BOOKING
+from routes.bookings.status_payment import STATUS_PAYMENT
 
 load_dotenv()
 
@@ -98,6 +99,8 @@ app.register_blueprint(STATUS_BOOK)
 app.register_blueprint(SETTINGS_PROFILE)
 app.register_blueprint(DELETE_MP_AUTH)
 app.register_blueprint(GET_ALL_BOOKING)
+app.register_blueprint(STATUS_PAYMENT)
+
 
 
 @app.route("/")

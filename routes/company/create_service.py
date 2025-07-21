@@ -20,7 +20,9 @@ def create_service():
             "active": data["service"]["active"],
             "capacity": data["service"]["capacity"],
             "requiresSpecificEmployee": data["service"]["requiresSpecificEmployee"],
-            "allowedEmployeeIds": data["service"]["allowedEmployeeIds"] or []
+            "allowedEmployeeIds": data["service"]["allowedEmployeeIds"] or [],
+            "requiresDeposit": data["requiresDeposit"],
+            "paymentPercentage": data["paymentPercentage"],
         })
         
         doc_id = doc_ref[1].id

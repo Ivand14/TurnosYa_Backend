@@ -14,6 +14,11 @@ def status_book():
 
     booking_id = data["booking_id"]
     new_status = data["new_status"]
+    payment_amount = data["paymentAmount"]
+    price = data["price"]
+    
+    if payment_amount:
+        payment_amount = price
 
     try:
         booking_ref = db.collection("reservas").where("id", "==", booking_id).get()
@@ -23,7 +28,12 @@ def status_book():
             return jsonify({"status": 404, "details": "Reserva no encontrada"}), 404
 
         for book in booking_list:
-            book.reference.update({"status": new_status})
+            update_data={
+                "status":new_status
+            },
+            if payment_amount is not None:
+                update_data["paymentAmount"] = payment_amount
+            book.reference.update(update_data)
 
         update_status = [
             {"id": book.id, **book.reference.get().to_dict()} for book in booking_list

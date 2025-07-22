@@ -49,3 +49,4 @@ def preferences_mp(businessId):
 
     resp = requests.post("https://api.mercadopago.com/checkout/preferences", json=body, headers=headers)
     return jsonify(resp.json()), resp.status_code
+

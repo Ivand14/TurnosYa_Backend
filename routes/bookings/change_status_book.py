@@ -17,8 +17,6 @@ def status_book():
     payment_amount = data["paymentAmount"]
     price = data["price"]
     
-    if payment_amount:
-        payment_amount = price
 
     try:
         booking_ref = db.collection("reservas").where("id", "==", booking_id).get()
@@ -31,8 +29,8 @@ def status_book():
             update_data={
                 "status":new_status
             }
-            if payment_amount is None and price is not None:
-                payment_amount = price
+            if payment_amount:
+                update_data["paymentAmount"] = price
 
             book.reference.update(update_data)
 

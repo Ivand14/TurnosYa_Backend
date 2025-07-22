@@ -39,10 +39,11 @@ def preferences_mp(businessId):
         ],
         "external_reference":data.get("bookingId"),
         "back_urls": {
-        "success": f"http://localhost:3000/business/{businessId}",
-        "failure": "http://localhost:3000/confirmacion?status=failure",
-        "pending": "http://localhost:3000/confirmacion?status=pending"
+            "success": f"https://www.uturns.lat/business/{businessId}",
+            "failure": "https://www.uturns.lat/confirmacion?status=failure",
+            "pending": "https://www.uturns.lat/confirmacion?status=pending"
         },
+
         "auto_return": "approved"
     }
 

@@ -82,7 +82,7 @@ def oauth_callback():
         </div>
         <script>
           setTimeout(function() {{
-            window.location.href = "http://localhost:8080/admin-dashboard/{businessId}";
+            window.location.href = "https://www.uturns.lat/admin-dashboard/{businessId}";
           }}, 1800);
         </script>
       </body>

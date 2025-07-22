@@ -37,7 +37,7 @@ def preferences_mp(businessId):
                 "currency_id": "ARS"
             }
         ],
-        "external_reference": data.get("external_reference"),
+        "external_reference": data.get("bookingId"),
         "back_urls": {
             "success": f"https://www.uturns.lat/business/{businessId}",
             "failure": "https://www.uturns.lat/confirmacion?status=failure",

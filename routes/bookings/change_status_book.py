@@ -30,9 +30,10 @@ def status_book():
         for book in booking_list:
             update_data={
                 "status":new_status
-            },
-            if payment_amount is not None:
-                update_data["paymentAmount"] = payment_amount
+            }
+            if payment_amount is None and price is not None:
+                payment_amount = price
+
             book.reference.update(update_data)
 
         update_status = [

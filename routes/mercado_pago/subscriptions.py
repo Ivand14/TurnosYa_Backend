@@ -17,8 +17,6 @@ def subscriptions():
 
     if not data.get("payer_email"):
         return jsonify({"error": "Faltan datos requeridos"}), 400
-    
-
 
     payload = {
         "reason": data.get("reason", "Suscripción mensual"),
@@ -41,8 +39,7 @@ def subscriptions():
                 { "id": "account_money" }
             ]
         },
-        "payer_email": data.get("payer_email"),
-        "back_url": "https://www.uturns.lat/login"
+        "back_url": "https://www.uturns.lat/register-business"
     }
 
     response = requests.post(
@@ -53,53 +50,11 @@ def subscriptions():
 
     response_data = response.json()
 
-    # if "id" not in response_data:
-    #     return jsonify({"error": "Error al crear suscripción", "detalle": response_data}), 500
-
-    # business_doc = db.collection("empresas").where("id", "==", data.get("businessId")).get()
-    # business_list = list(business_doc)
-
-    # if not business_list:
-    #     return jsonify({"error": "Empresa no encontrada"}), 404
-
-    # for buss in business_list:
-    #     buss.reference.update({
-    #         "subscriptions": {
-    #             "preapproval_id": response_data["id"],
-    #             "email": data.get("email"),
-    #             "estado": "pendiente", 
-    #             "fecha_creacion": datetime.now()
-    #         }
-    #     })
-
     return jsonify({
-        "details":response_data
+        "init_point": response_data.get("init_point"),
+        "preapproval_id": response_data.get("id"),
+        "status": 200
     })
 
 
-@SUBSCRIPTIONS.route("/webhook", methods=["POST"])
-def webhook():
-    data = request.get_json()
-    topic = data.get("type") or data.get("topic")
-    resource_id = data.get("data", {}).get("id")
-
-    if topic == "preapproval" and resource_id:
-        response = requests.get(
-            f"https://api.mercadopago.com/preapproval/{resource_id}",
-            headers={"Authorization": f"Bearer {ACCESS_TOKEN}"}
-        )
-        info = response.json()
-
-        # # Actualizar el estado en la empresa correspondiente
-        # empresa_doc = db.collection("empresas").where("subscriptions.preapproval_id", "==", resource_id).get()
-        # for doc in empresa_doc:
-        #     doc.reference.update({
-        #         "subscriptions.estado": info.get("status"),
-        #         "subscriptions.fecha_ultima_actualizacion": datetime.now()
-        #     })
-        return jsonify({
-            "details":info,
-            "status":200
-        })
-
-    return "", 200
+# https://www.mercadopago.com.ar/subscriptions/checkout/congrats?collection_id=null&collection_status=approved&preference_id=762992048-6190dfaa-a334-4b3a-8cf5-ad63a47c8d9a&payment_type=account_money&payment_id=null&external_reference=16b414b815f54d918bc0fb90e0269ca9&site_id=MLA&status=approved&

@@ -41,6 +41,7 @@ def subscriptions():
                 }
             ]
         },
+        "payer_email": data.get("email"),
         "back_url": "https://www.uturns.lat/login"
     }
 

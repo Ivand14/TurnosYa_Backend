@@ -31,7 +31,7 @@ def subscriptions():
                 "frequency": data.get("free_trial", 7),
                 "frequency_type": "days"
             },
-            "transaction_amount": data.get(""),
+            "transaction_amount": data.get("amount"),
             "currency_id": "ARS"
         },
         "payment_methods_allowed": {

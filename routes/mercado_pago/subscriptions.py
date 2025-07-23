@@ -15,8 +15,10 @@ SUBSCRIPTIONS = Blueprint("SUBSCRIPTIONS", __name__)
 def subscriptions():
     data = request.get_json()
 
-    if not data.get("businessId") or not data.get("email"):
+    if not data.get("email"):
         return jsonify({"error": "Faltan datos requeridos"}), 400
+    
+
 
     payload = {
         "reason": data.get("reason", "Suscripción mensual"),
@@ -29,7 +31,7 @@ def subscriptions():
                 "frequency": data.get("free_trial", 7),
                 "frequency_type": "days"
             },
-            "transaction_amount": data.get("amount", 1000),
+            "transaction_amount": data.get(""),
             "currency_id": "ARS"
         },
         "payment_methods_allowed": {
@@ -50,24 +52,24 @@ def subscriptions():
 
     response_data = response.json()
 
-    if "id" not in response_data:
-        return jsonify({"error": "Error al crear suscripción", "detalle": response_data}), 500
+    # if "id" not in response_data:
+    #     return jsonify({"error": "Error al crear suscripción", "detalle": response_data}), 500
 
-    business_doc = db.collection("empresas").where("id", "==", data.get("businessId")).get()
-    business_list = list(business_doc)
+    # business_doc = db.collection("empresas").where("id", "==", data.get("businessId")).get()
+    # business_list = list(business_doc)
 
-    if not business_list:
-        return jsonify({"error": "Empresa no encontrada"}), 404
+    # if not business_list:
+    #     return jsonify({"error": "Empresa no encontrada"}), 404
 
-    for buss in business_list:
-        buss.reference.update({
-            "subscriptions": {
-                "preapproval_id": response_data["id"],
-                "email": data.get("email"),
-                "estado": "pendiente", 
-                "fecha_creacion": datetime.now()
-            }
-        })
+    # for buss in business_list:
+    #     buss.reference.update({
+    #         "subscriptions": {
+    #             "preapproval_id": response_data["id"],
+    #             "email": data.get("email"),
+    #             "estado": "pendiente", 
+    #             "fecha_creacion": datetime.now()
+    #         }
+    #     })
 
     return jsonify({
         "init_point": response_data.get("init_point"),
@@ -88,12 +90,16 @@ def webhook():
         )
         info = response.json()
 
-        # Actualizar el estado en la empresa correspondiente
-        empresa_doc = db.collection("empresas").where("subscriptions.preapproval_id", "==", resource_id).get()
-        for doc in empresa_doc:
-            doc.reference.update({
-                "subscriptions.estado": info.get("status"),
-                "subscriptions.fecha_ultima_actualizacion": datetime.now()
-            })
+        # # Actualizar el estado en la empresa correspondiente
+        # empresa_doc = db.collection("empresas").where("subscriptions.preapproval_id", "==", resource_id).get()
+        # for doc in empresa_doc:
+        #     doc.reference.update({
+        #         "subscriptions.estado": info.get("status"),
+        #         "subscriptions.fecha_ultima_actualizacion": datetime.now()
+        #     })
+        return jsonify({
+            "details":info,
+            "status":200
+        })
 
     return "", 200

@@ -53,7 +53,6 @@ def register_company():
             "subscriptionPlan": data.get("subscriptionPlan")
         })
         
-        print(company_register_db)
 
         return jsonify({"status": 200, "details": "Empresa creada con éxito"}), 200
 

@@ -72,8 +72,7 @@ def subscriptions():
     #     })
 
     return jsonify({
-        "init_point": response_data.get("init_point"),
-        "preapproval_id": response_data.get("id")
+        "details":response_data
     })
 
 

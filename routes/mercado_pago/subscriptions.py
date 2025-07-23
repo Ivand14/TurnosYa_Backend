@@ -36,9 +36,9 @@ def subscriptions():
         },
         "payment_methods_allowed": {
             "payment_types": [
-                {
-                    "id": "credit_card"
-                }
+                { "id": "credit_card" },
+                { "id": "debit_card" },
+                { "id": "account_money" }
             ]
         },
         "payer_email": data.get("payer_email"),

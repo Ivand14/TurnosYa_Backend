@@ -15,7 +15,7 @@ SUBSCRIPTIONS = Blueprint("SUBSCRIPTIONS", __name__)
 def subscriptions():
     data = request.get_json()
 
-    if not data.get("email"):
+    if not data.get("payer_email"):
         return jsonify({"error": "Faltan datos requeridos"}), 400
     
 
@@ -41,7 +41,7 @@ def subscriptions():
                 }
             ]
         },
-        "payer_email": data.get("email"),
+        "payer_email": data.get("payer_email"),
         "back_url": "https://www.uturns.lat/login"
     }
 

@@ -46,7 +46,7 @@ def subscriptions():
     }
 
     response = requests.post(
-        "https://api.mercadopago.com/preapproval",
+        "https://api.mercadopago.com/preapproval_plan",
         headers={"Authorization": f"Bearer {ACCESS_TOKEN}"},
         json=payload
     )

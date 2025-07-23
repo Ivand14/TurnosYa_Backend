@@ -2,8 +2,6 @@ import os
 from flask import Blueprint, jsonify, request
 from dotenv import load_dotenv
 import requests
-from config.firebase_service import db
-from datetime import datetime 
 
 load_dotenv()
 
@@ -14,9 +12,6 @@ SUBSCRIPTIONS = Blueprint("SUBSCRIPTIONS", __name__)
 @SUBSCRIPTIONS.route("/plan", methods=["POST"])
 def subscriptions():
     data = request.get_json()
-
-    if not data.get("payer_email"):
-        return jsonify({"error": "Faltan datos requeridos"}), 400
 
     payload = {
         "reason": data.get("reason", "Suscripción mensual"),
@@ -56,5 +51,3 @@ def subscriptions():
         "status": 200
     })
 
-
-# https://www.mercadopago.com.ar/subscriptions/checkout/congrats?collection_id=null&collection_status=approved&preference_id=762992048-6190dfaa-a334-4b3a-8cf5-ad63a47c8d9a&payment_type=account_money&payment_id=null&external_reference=16b414b815f54d918bc0fb90e0269ca9&site_id=MLA&status=approved&

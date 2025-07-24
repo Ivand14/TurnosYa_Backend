@@ -14,23 +14,11 @@ REGISTER_COMPANY = Blueprint("REGISTER_COMPANY", __name__)
 @REGISTER_COMPANY.route("/register_company/<preapproval_id>", methods=["POST"])
 def register_company(preapproval_id):
     data = request.form
-    file = request.files.get("logo")
-    company_image_url = ""
-    
-    if file:
-        try:
-            bucket = storage.bucket()
-            blob = bucket.blob(f"company_profile/{file.filename}")
-            blob.upload_from_string(file.read(), content_type=file.content_type)
-            blob.make_public()
-            company_image_url = blob.public_url
-        except Exception as e:
-            return jsonify({"status": 500, "details": f"Error al subir imagen: {str(e)}"}), 500
+
 
     if not data:
         return jsonify({"status": 400, "details": "Datos de solicitud inválidos"}), 400
-    if not file:
-        return {"error": "No se envió ningún archivo"}, 400
+
 
     try:
         # Crear usuario de empresa en Firebase Authentication
@@ -58,7 +46,7 @@ def register_company(preapproval_id):
             "company_type": data.get("businessType"),
             "address": data.get("address"),
             "description": data.get("description"),
-            "logo": company_image_url,
+            "logo": data.get("logo"),
             "subscriptionPlan": data.get("subscriptionPlan"),
             "preapproval_id": preapproval_id
         })

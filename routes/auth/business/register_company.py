@@ -15,7 +15,6 @@ REGISTER_COMPANY = Blueprint("REGISTER_COMPANY", __name__)
 def register_company(preapproval_id):
     data = request.json
 
-
     if not data:
         return jsonify({"status": 400, "details": "Datos de solicitud inválidos"}), 400
 
@@ -36,7 +35,7 @@ def register_company(preapproval_id):
                 })
 
         # Guardar empresa en Firestore
-        firebase_service.db.collection("empresas").add({
+        company_data = {
             "email": company.email,
             "id": company.uid,
             "company_name": company.display_name,
@@ -45,11 +44,15 @@ def register_company(preapproval_id):
             "phone": data.get("phone"),
             "company_type": data.get("businessType"),
             "address": data.get("address"),
-            "description": data.get("description"),
-            "logo": data.get("logo"),
+            "logo": data.get("logo_url"),
             "subscriptionPlan": data.get("subscriptionPlan"),
             "preapproval_id": preapproval_id
-        })
+        }
+        
+        if data.get("description"):
+            company_data["description"] = data.get("description")
+            
+        firebase_service.db.collection("empresas").add(company_data)
 
         # Obtener los datos de la suscripción desde Mercado Pago
         try:

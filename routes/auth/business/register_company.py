@@ -13,7 +13,7 @@ REGISTER_COMPANY = Blueprint("REGISTER_COMPANY", __name__)
 
 @REGISTER_COMPANY.route("/register_company/<preapproval_id>", methods=["POST"])
 def register_company(preapproval_id):
-    data = request.form
+    data = request.json
 
 
     if not data:

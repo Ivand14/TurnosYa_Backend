@@ -13,3 +13,6 @@ __pycache__/
 # Ignorar configuraciones de IDE
 .vscode/
 .idea/
+
+
+/config/turnos_ya.json

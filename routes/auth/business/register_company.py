@@ -27,12 +27,7 @@ def register_company(preapproval_id):
             display_name=data.get("businessName")
         )
 
-        for key, value in data.items():
-            if not value:
-                return jsonify({
-                    "status": 404,
-                    "details": "Faltan campos por completar"
-                })
+
 
         # Guardar empresa en Firestore
         company_data = {

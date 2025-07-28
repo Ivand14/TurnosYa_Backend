@@ -1,6 +1,7 @@
 # Ignorar archivos de caché y compilación
 __pycache__/
 *.pyc
+config/turnos_ya.json
 
 # Ignorar entorno virtual
 .venv/
@@ -14,5 +15,3 @@ __pycache__/
 .vscode/
 .idea/
 
-
-/config/turnos_ya.json

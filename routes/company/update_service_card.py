@@ -27,7 +27,9 @@ def update_service_card(id):
                 "price": data["price"],
                 "capacity": data["capacity"],
                 "requiresSpecificEmployee": data["requiresSpecificEmployee"],
-                "allowedEmployeeIds": data["allowedEmployeeIds"]
+                "allowedEmployeeIds": data["allowedEmployeeIds"],
+                "schedule": data["schedule"] or [],
+                "blackoutDates": data["blackoutDates"] or [],
             })
 
         

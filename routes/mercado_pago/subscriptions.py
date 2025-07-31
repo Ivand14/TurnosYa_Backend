@@ -53,11 +53,8 @@ def subscriptions():
         "status": 200
     })
 
-@SUBSCRIPTIONS.route("/plan/cancel", methods=["PUT"])
-def cancel_subscription():
-    data = request.json
-    preapproval_id = data.get("preapproval_id")
-    
+@SUBSCRIPTIONS.route("/plan/cancel/<preapproval_id>", methods=["PUT"])
+def cancel_subscription(preapproval_id):
     if not preapproval_id:
         return jsonify({"error": "preapproval_id is required"}), 400
     
@@ -79,14 +76,14 @@ def cancel_subscription():
         })
 
     
-    return jsonify({"message": "Subscription cancelled successfully"}), 200
+    return jsonify({
+        "message": "Subscription cancelled successfully",
+        "status": 200
+    })
 
 
-@SUBSCRIPTIONS.route("/plan/information", methods=["GET"])
-def get_plan_information():
-    data = request.json
-    preapproval_id = data.get("preapproval_id")
-    
+@SUBSCRIPTIONS.route("/plan/information/<preapproval_id>", methods=["GET"])
+def get_plan_information(preapproval_id):
     if not preapproval_id:
         return jsonify({"error": "preapproval_id is required"}), 400
         

@@ -1,7 +1,9 @@
 import os
 from flask import Blueprint, jsonify, request
 from dotenv import load_dotenv
+from config.firebase_service import db
 import requests
+from google.cloud.firestore import DELETE_FIELD
 
 load_dotenv()
 
@@ -51,3 +53,30 @@ def subscriptions():
         "status": 200
     })
 
+@SUBSCRIPTIONS.route("/plan/cancel", methods=["PUT"])
+def cancel_subscription():
+    data = request.json
+    preapproval_id = data.get("preapproval_id")
+    
+    if not preapproval_id:
+        return jsonify({"error": "preapproval_id is required"}), 400
+    
+    response = requests.put(
+        f"https://api.mercadopago.com/preapproval/{preapproval_id}",
+        headers={"Authorization": f"Bearer {ACCESS_TOKEN}"},
+        json={"status": "cancelled"}
+    )
+    
+    if response.status_code != 200:
+        return jsonify({"error": "Failed to cancel subscription"}), response.status_code
+    
+    business_subscriptions = db.collection("empresas").where("mercado_pago_subscription.id", "==", preapproval_id).get()
+    
+    for subscription in business_subscriptions:
+        subscription.reference.update({
+            "mercado_pago_subscription": DELETE_FIELD,
+            "preapproval_id": DELETE_FIELD
+        })
+
+    
+    return jsonify({"message": "Subscription cancelled successfully"}), 200

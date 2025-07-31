@@ -80,3 +80,26 @@ def cancel_subscription():
 
     
     return jsonify({"message": "Subscription cancelled successfully"}), 200
+
+
+@SUBSCRIPTIONS.route("/plan/information", methods=["GET"])
+def get_plan_information():
+    data = request.json
+    preapproval_id = data.get("preapproval_id")
+    
+    if not preapproval_id:
+        return jsonify({"error": "preapproval_id is required"}), 400
+        
+    response = requests.get(
+        f"https://api.mercadopago.com/preapproval/{preapproval_id}",
+        headers={"Authorization": f"Bearer {ACCESS_TOKEN}"})
+
+
+    if response.status_code != 200:
+        return jsonify({"error": "Failed to retrieve plan information"}), response.status_code
+    
+    plan_info = response.json()
+    return jsonify({
+        "plan_info": plan_info,
+        "status": 200
+    })

@@ -5,6 +5,7 @@ import requests
 from config.firebase_service import db
 import logging
 
+# Configuración del logger
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
@@ -152,7 +153,4 @@ def get_access_token(authorization_code, businessId):
         "message": "Token del vendedor registrado con éxito",
         "status": 200
     })
-
-
-
 

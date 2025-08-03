@@ -60,19 +60,24 @@ def subscribe():
         "back_url": "https://www.uturns.lat/register-business"
     }
 
-    response = requests.post(
+    try:
+        response = requests.post(
         "https://api.mercadopago.com/preapproval",
         headers={"Authorization": f"Bearer {ACCESS_TOKEN}"},
         json=payload
-    )
+        )
 
-    response_data = response.json()
+        response_data = response.json()
 
-    return jsonify({
-        "init_point": response_data.get("init_point"),
-        "preapproval_id": response_data.get("id"),
-        "status": 200
-    })
+        return jsonify({
+            "init_point": response_data.get("init_point"),
+            "preapproval_id": response_data.get("id"),
+            "status": 200
+        })
+    except requests.RequestException as e:
+        return jsonify({"error": "Failed to create subscription", "details": str(e)}), 500
+    except Exception as e:
+        return jsonify({"error": "Failed to create subscription", "details": str(e)}), 500
 
 
 @SUBSCRIPTIONS.route("/plan/cancel/<preapproval_id>", methods=["PUT"])
@@ -80,45 +85,55 @@ def cancel_subscription(preapproval_id):
     if not preapproval_id:
         return jsonify({"error": "preapproval_id is required"}), 400
 
-    response = requests.put(
+    try:
+        response = requests.put(
         f"https://api.mercadopago.com/preapproval/{preapproval_id}",
         headers={"Authorization": f"Bearer {ACCESS_TOKEN}"},
         json={"status": "cancelled"}
-    )
+        )
 
-    if response.status_code != 200:
-        return jsonify({"error": "Failed to cancel subscription"}), response.status_code
+        if response.status_code != 200:
+            return jsonify({"error": "Failed to cancel subscription"}), response.status_code
 
-    business_subscriptions = db.collection("empresas").where("mercado_pago_subscription.id", "==", preapproval_id).get()
+        business_subscriptions = db.collection("empresas").where("mercado_pago_subscription.id", "==", preapproval_id).get()
 
-    for subscription in business_subscriptions:
-        subscription.reference.update({
-            "mercado_pago_subscription": DELETE_FIELD,
-            "preapproval_id": DELETE_FIELD,
-            "subscriptionPlan": DELETE_FIELD
+        for subscription in business_subscriptions:
+            subscription.reference.update({
+                "mercado_pago_subscription": DELETE_FIELD,
+                "preapproval_id": DELETE_FIELD,
+                "subscriptionPlan": DELETE_FIELD
+            })
+
+        return jsonify({
+            "message": "Subscription cancelled successfully",
+            "status": 200
         })
-
-    return jsonify({
-        "message": "Subscription cancelled successfully",
-        "status": 200
-    })
+    except requests.RequestException as e:
+        return jsonify({"error": "Failed to cancel subscription", "details": str(e)}), 500
+    except Exception as e:
+        return jsonify({"error": "Failed to cancel subscription", "details": str(e)}), 500
 
 
 @SUBSCRIPTIONS.route("/plan/information/<preapproval_id>", methods=["GET"])
 def get_plan_information(preapproval_id):
-    if not preapproval_id:
-        return jsonify({"error": "preapproval_id is required"}), 400
+    try:
+        if not preapproval_id:
+            return jsonify({"error": "preapproval_id is required"}), 400
 
-    response = requests.get(
-        f"https://api.mercadopago.com/preapproval/{preapproval_id}",
-        headers={"Authorization": f"Bearer {ACCESS_TOKEN}"}
-    )
+        response = requests.get(
+            f"https://api.mercadopago.com/preapproval/{preapproval_id}",
+            headers={"Authorization": f"Bearer {ACCESS_TOKEN}"}
+        )
 
-    if response.status_code != 200:
-        return jsonify({"error": "Failed to retrieve plan information"}), response.status_code
+        if response.status_code != 200:
+            return jsonify({"error": "Failed to retrieve plan information"}), response.status_code
 
-    plan_info = response.json()
-    return jsonify({
-        "plan_info": plan_info,
-        "status": 200
-    })
+        plan_info = response.json()
+        return jsonify({
+            "plan_info": plan_info,
+            "status": 200
+        })
+    except requests.RequestException as e:
+        return jsonify({"error": "Failed to retrieve plan information", "details": str(e)}), 500
+    except Exception as e:
+        return jsonify({"error": "Failed to retrieve plan information", "details": str(e)}), 500

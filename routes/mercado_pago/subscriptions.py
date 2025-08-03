@@ -4,43 +4,37 @@ from dotenv import load_dotenv
 from config.firebase_service import db
 import requests
 from google.cloud.firestore import DELETE_FIELD
+import datetime
 
 load_dotenv()
 
 ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN_PROD")
 
 SUBSCRIPTIONS = Blueprint("SUBSCRIPTIONS", __name__)
-
-@SUBSCRIPTIONS.route("/plan", methods=["POST"])
-def subscriptions():
+@SUBSCRIPTIONS.route("/subscribe", methods=["POST"])
+def subscribe():
     data = request.get_json()
 
     payload = {
+        "payer_email": data["email"],
+        "back_url": "https://www.uturns.lat/register-business",
         "reason": data.get("reason", "Suscripción mensual"),
         "auto_recurring": {
             "frequency": 1,
             "frequency_type": "months",
-            "billing_day": 5,
-            "billing_day_proportional": False,
+            "transaction_amount": data["amount"],
+            "currency_id": "ARS",
+            "start_date": datetime.utcnow().isoformat() + "Z",
+            "end_date": "2026-08-05T00:00:00.000Z",
             "free_trial": {
                 "frequency": data.get("free_trial", 7),
                 "frequency_type": "days"
-            },
-            "transaction_amount": data.get("amount"),
-            "currency_id": "ARS"
-        },
-        "payment_methods_allowed": {
-            "payment_types": [
-                { "id": "credit_card" },
-                { "id": "debit_card" },
-                { "id": "account_money" }
-            ]
-        },
-        "back_url": "https://www.uturns.lat/register-business"
+            }
+        }
     }
 
     response = requests.post(
-        "https://api.mercadopago.com/preapproval_plan",
+        "https://api.mercadopago.com/preapproval",
         headers={"Authorization": f"Bearer {ACCESS_TOKEN}"},
         json=payload
     )
@@ -72,7 +66,8 @@ def cancel_subscription(preapproval_id):
     for subscription in business_subscriptions:
         subscription.reference.update({
             "mercado_pago_subscription": DELETE_FIELD,
-            "preapproval_id": DELETE_FIELD
+            "preapproval_id": DELETE_FIELD,
+            "subscriptionPlan": DELETE_FIELD
         })
 
     
@@ -100,3 +95,8 @@ def get_plan_information(preapproval_id):
         "plan_info": plan_info,
         "status": 200
     })
+    
+    
+# @SUBSCRIPTIONS.route("/plan/activate/<preapproval_id>", methods=["PUT"])
+# def activate_subscription(preapproval_id):
+    

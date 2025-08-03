@@ -13,6 +13,22 @@ SUBSCRIPTIONS = Blueprint("SUBSCRIPTIONS", __name__)
 @SUBSCRIPTIONS.route("/subscribe", methods=["POST"])
 def subscribe():
     data = request.get_json()
+    if not data or "email" not in data or "amount" not in data:
+        return jsonify({"error": "Invalid request data"}), 400
+
+    # Validate email format
+    if "@" not in data["email"] or "." not in data["email"]:
+        return jsonify({"error": "Invalid email format"}), 400
+
+    # Validate amount
+    try:
+        amount = float(data["amount"])
+        if amount <= 0:
+            raise ValueError("Amount must be greater than zero")
+    except (ValueError, TypeError):
+        return jsonify({"error": "Invalid amount"}), 400
+
+    # Prepare the payload for Mercado Pago subscription
 
     payload = {
         "payer_email": data["email"],

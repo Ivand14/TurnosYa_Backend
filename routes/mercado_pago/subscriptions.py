@@ -4,12 +4,15 @@ from dotenv import load_dotenv
 from config.firebase_service import db
 import requests
 from google.cloud.firestore import DELETE_FIELD
+from datetime import datetime, timezone
 
 load_dotenv()
 
 ACCESS_TOKEN = os.getenv("MP_ACCESS_TOKEN_PROD")
 
 SUBSCRIPTIONS = Blueprint("SUBSCRIPTIONS", __name__)
+
+
 @SUBSCRIPTIONS.route("/subscribe", methods=["POST"])
 def subscribe():
     data = request.get_json()
@@ -28,26 +31,37 @@ def subscribe():
     except (ValueError, TypeError):
         return jsonify({"error": "Invalid amount"}), 400
 
-    # Prepare the payload for Mercado Pago subscription
+    now_utc = datetime.now(timezone.utc)
+    next_year = now_utc.replace(year=now_utc.year + 1)
 
     payload = {
-        "payer_email": data["email"],
-        "back_url": "https://www.uturns.lat/register-business",
         "reason": data.get("reason", "Suscripción mensual"),
         "auto_recurring": {
             "frequency": 1,
             "frequency_type": "months",
-            "transaction_amount": data["amount"],
+            "billing_day": 5,
+            "billing_day_proportional": False,
+            "transaction_amount": amount,
             "currency_id": "ARS",
+            "start_date": now_utc.isoformat(),
+            "end_date": next_year.isoformat(),
             "free_trial": {
                 "frequency": data.get("free_trial", 7),
                 "frequency_type": "days"
             }
-        }
+        },
+        "payment_methods_allowed": {
+            "payment_types": [
+                {"id": "credit_card"},
+                {"id": "debit_card"},
+                {"id": "account_money"}
+            ]
+        },
+        "back_url": "https://www.uturns.lat/register-business"
     }
 
     response = requests.post(
-        "https://api.mercadopago.com/preapproval_plan",
+        "https://api.mercadopago.com/preapproval",
         headers={"Authorization": f"Bearer {ACCESS_TOKEN}"},
         json=payload
     )
@@ -60,22 +74,23 @@ def subscribe():
         "status": 200
     })
 
+
 @SUBSCRIPTIONS.route("/plan/cancel/<preapproval_id>", methods=["PUT"])
 def cancel_subscription(preapproval_id):
     if not preapproval_id:
         return jsonify({"error": "preapproval_id is required"}), 400
-    
+
     response = requests.put(
         f"https://api.mercadopago.com/preapproval/{preapproval_id}",
         headers={"Authorization": f"Bearer {ACCESS_TOKEN}"},
         json={"status": "cancelled"}
     )
-    
+
     if response.status_code != 200:
         return jsonify({"error": "Failed to cancel subscription"}), response.status_code
-    
+
     business_subscriptions = db.collection("empresas").where("mercado_pago_subscription.id", "==", preapproval_id).get()
-    
+
     for subscription in business_subscriptions:
         subscription.reference.update({
             "mercado_pago_subscription": DELETE_FIELD,
@@ -83,7 +98,6 @@ def cancel_subscription(preapproval_id):
             "subscriptionPlan": DELETE_FIELD
         })
 
-    
     return jsonify({
         "message": "Subscription cancelled successfully",
         "status": 200
@@ -94,22 +108,17 @@ def cancel_subscription(preapproval_id):
 def get_plan_information(preapproval_id):
     if not preapproval_id:
         return jsonify({"error": "preapproval_id is required"}), 400
-        
+
     response = requests.get(
         f"https://api.mercadopago.com/preapproval/{preapproval_id}",
-        headers={"Authorization": f"Bearer {ACCESS_TOKEN}"})
-
+        headers={"Authorization": f"Bearer {ACCESS_TOKEN}"}
+    )
 
     if response.status_code != 200:
         return jsonify({"error": "Failed to retrieve plan information"}), response.status_code
-    
+
     plan_info = response.json()
     return jsonify({
         "plan_info": plan_info,
         "status": 200
     })
-    
-    
-# @SUBSCRIPTIONS.route("/plan/activate/<preapproval_id>", methods=["PUT"])
-# def activate_subscription(preapproval_id):
-    

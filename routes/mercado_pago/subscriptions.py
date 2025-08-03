@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from config.firebase_service import db
 import requests
 from google.cloud.firestore import DELETE_FIELD
-import datetime
+from datetime import datetime,timezone
 
 load_dotenv()
 
@@ -24,8 +24,25 @@ def subscribe():
             "frequency_type": "months",
             "transaction_amount": data["amount"],
             "currency_id": "ARS",
-            "start_date": datetime.utcnow().isoformat() + "Z",
-            "end_date": "2026-08-05T00:00:00.000Z",
+            "start_date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S") + "Z",
+            "end_date": datetime.now(timezone.utc).replace(year=datetime.now(timezone.utc).year + 1).strftime("%Y-%m-%dT%H:%M:%S") + "Z",
+            "external_reference": data.get("external_reference", "UTURNS_SUBSCRIPTION"),
+            "metadata": {
+                "business_id": data.get("business_id", ""),
+                "plan_name": data.get("plan_name", "Basic Plan")
+            },
+            "notification_url": data.get("notification_url", "https://www.uturns.lat/mercado_pago/notifications"),
+            "additional_info": {
+                "items": [
+                    {
+                        "title": data.get("plan_name", "Basic Plan"),
+                        "description": data.get("description", "Plan de suscripción mensual"),
+                        "quantity": 1,
+                        "currency_id": "ARS",
+                        "unit_price": data["amount"]
+                    }
+                ]
+            },
             "free_trial": {
                 "frequency": data.get("free_trial", 7),
                 "frequency_type": "days"

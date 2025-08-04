@@ -8,7 +8,8 @@ SETTINGS_PROFILE = Blueprint("SETTINGS_PROFILE", __name__)
 @SETTINGS_PROFILE.route("/config/profile",methods=["PATCH"])
 def setting_profile():
     db = firebase_service.db
-    data = request.form
+    data = request.get_json()
+
     
     if not "businessId" in data :
         return jsonify({"status": 400, "details": "Faltan datos requeridos"}), 400

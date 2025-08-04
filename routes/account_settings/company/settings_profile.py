@@ -20,7 +20,7 @@ def setting_profile():
     address = data.get("address")
     description = data.get("description")
     business_id = data.get("businessId")
-    file = request.files.get("logo")
+    logo = data.get("logo")
     
     update_data = {}
 
@@ -35,17 +35,13 @@ def setting_profile():
         update_data["address"] = address
     if description:
         update_data["description"] = description
+    if logo:
+        update_data["logo"] = logo
+
+    if not update_data:
+        return jsonify({"status": 400, "details": "No hay datos para actualizar"}), 400
     
     try:
-        # Image Upload
-        if file:
-            bucket = storage.bucket()
-            blob = bucket.blob(f"company_profile/{file.filename}")
-            blob.upload_from_string(file.read(), content_type=file.content_type)
-            
-            blob.make_public()
-            new_url = blob.public_url
-            update_data["logo"] = new_url
         
         profile_doc = db.collection("empresas").where("id","==",business_id).get()
         

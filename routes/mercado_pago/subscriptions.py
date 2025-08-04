@@ -39,7 +39,7 @@ def subscribe():
             "frequency_type": "months",
             "billing_day": 5,
             "billing_day_proportional": False,
-            "transaction_amount": amount,
+            "transaction_amount": data.get("amount"),
             "currency_id": "ARS",
             "free_trial": {
                 "frequency": data.get("free_trial", 7),
@@ -60,7 +60,7 @@ def subscribe():
         response = requests.post(
         "https://api.mercadopago.com/preapproval_plan",
         headers={"Authorization": f"Bearer {ACCESS_TOKEN}"},
-        json=payload
+        json=payload 
         )
 
         response_data = response.json()

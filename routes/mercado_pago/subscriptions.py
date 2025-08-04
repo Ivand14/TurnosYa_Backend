@@ -43,8 +43,6 @@ def subscribe():
             "billing_day_proportional": False,
             "transaction_amount": amount,
             "currency_id": "ARS",
-            "start_date": now_utc.isoformat(),
-            "end_date": next_year.isoformat(),
             "free_trial": {
                 "frequency": data.get("free_trial", 7),
                 "frequency_type": "days"

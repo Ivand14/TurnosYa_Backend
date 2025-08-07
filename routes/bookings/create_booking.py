@@ -15,6 +15,7 @@ def create_booking():
             "id": data["id"],
             "businessId": data["businessId"],
             "serviceName": data["serviceName"],
+            "serviceId": data["serviceId"],
             "userId": data["userId"],
             "userName": data["userName"],
             "userEmail": data["userEmail"],

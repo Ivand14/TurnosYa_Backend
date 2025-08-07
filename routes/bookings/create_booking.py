@@ -14,7 +14,7 @@ def create_booking():
         doc_ref = db.collection("reservas").add({
             "id": data["id"],
             "businessId": data["businessId"],
-            "serviceId": data["serviceId"],
+            "serviceName": data["serviceName"],
             "userId": data["userId"],
             "userName": data["userName"],
             "userEmail": data["userEmail"],

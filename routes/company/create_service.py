@@ -25,6 +25,7 @@ def create_service():
             "paymentPercentage": data["service"]["paymentPercentage"],
             "schedule": data["service"]["schedule"],
             "blackoutDates": data["service"]["blackoutDates"] or [],
+            "category":data["service"]["category"] or ""
         })
         
         doc_id = doc_ref[1].id

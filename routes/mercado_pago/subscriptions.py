@@ -30,6 +30,11 @@ def subscribe():
     except (ValueError, TypeError):
         return jsonify({"error": "Invalid amount"}), 400
 
+    pathname = data.get("pathname")
+    if not pathname:
+        raise ValueError(f"[ERROR] pathname inválido: {pathname}")
+
+    back_url = f"https://www.uturns.lat{pathname}"
 
 
     payload = {
@@ -53,7 +58,7 @@ def subscribe():
                 {"id": "account_money"}
             ]
         },
-        "back_url": "https://www.uturns.lat/register-business"
+        "back_url": back_url
     }
 
     try:
@@ -133,3 +138,4 @@ def get_plan_information(preapproval_id):
         return jsonify({"error": "Failed to retrieve plan information", "details": str(e)}), 500
     except Exception as e:
         return jsonify({"error": "Failed to retrieve plan information", "details": str(e)}), 500
+    

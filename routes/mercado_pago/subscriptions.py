@@ -31,12 +31,13 @@ def subscribe():
         return jsonify({"error": "Invalid amount"}), 400
 
     pathname = data.get("pathname")
+    
     if not pathname:
         raise ValueError(f"[ERROR] pathname inválido: {pathname}")
 
     back_url = f"https://www.uturns.lat{pathname}"
-
-
+    
+    
     payload = {
         "reason": data.get("reason", "Suscripción mensual"),
         "auto_recurring": {
@@ -69,12 +70,14 @@ def subscribe():
         )
 
         response_data = response.json()
+        
 
         return jsonify({
             "init_point": response_data.get("init_point"),
             "preapproval_id": response_data.get("id"),
             "status": 200
         })
+        
     except requests.RequestException as e:
         return jsonify({"error": "Failed to create subscription", "details": str(e)}), 500
     except Exception as e:
@@ -139,3 +142,27 @@ def get_plan_information(preapproval_id):
     except Exception as e:
         return jsonify({"error": "Failed to retrieve plan information", "details": str(e)}), 500
     
+@SUBSCRIPTIONS.route("/reactive/subscription",methods=["PATCH"])
+def reactive_subscription():
+    data = request.json()
+    preapproval_id = data.get("preapproval_id")
+    businessId = data.get("businessId")
+    try:
+        response = requests.get(
+            f"https://api.mercadopago.com/preapproval/{preapproval_id}",
+            headers={"Authorization": f"Bearer {ACCESS_TOKEN}"}
+        )
+        response_data = response.json()
+        business_doc = db.collection("empresas").where("id","==",businessId).get()
+        for business in business_doc:
+            business.reference.update({
+                "mercado_pago_subscription":{
+                    "id": response_data.get("id"),
+                    "status": response_data.get("status"),
+                    "next_payment_date": response_data.get("auto_recurring", {}).get("next_payment_date"),
+                    "reason": response_data.get("reason")
+                }
+            })
+        return jsonify({"details":"Subscripcion reactivada","status":200})
+    except Exception as e:
+        return jsonify({"error": "Failed to reactivate subscription", "details": str(e)}), 500

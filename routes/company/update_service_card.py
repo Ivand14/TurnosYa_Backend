@@ -30,6 +30,7 @@ def update_service_card(id):
                 "allowedEmployeeIds": data["allowedEmployeeIds"],
                 "schedule": data["schedule"] or [],
                 "blackoutDates": data["blackoutDates"] or [],
+                "category": data["category"] or "",
             })
 
         

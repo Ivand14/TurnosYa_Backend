@@ -142,7 +142,7 @@ def get_plan_information(preapproval_id):
     except Exception as e:
         return jsonify({"error": "Failed to retrieve plan information", "details": str(e)}), 500
     
-@SUBSCRIPTIONS.route("/reactive/subscription",methods=["PATCH"])
+@SUBSCRIPTIONS.route("/reactive/subscription",methods=["POST"])
 def reactive_subscription():
     data = request.json()
     preapproval_id = data.get("preapproval_id")
@@ -161,7 +161,8 @@ def reactive_subscription():
                     "status": response_data.get("status"),
                     "next_payment_date": response_data.get("auto_recurring", {}).get("next_payment_date"),
                     "reason": response_data.get("reason")
-                }
+                },
+                "preapproval_id":preapproval_id
             })
         return jsonify({"details":"Subscripcion reactivada","status":200})
     except Exception as e:

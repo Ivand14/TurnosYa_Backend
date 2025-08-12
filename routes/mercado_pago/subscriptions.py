@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from config.firebase_service import db
 import requests
 from google.cloud.firestore import DELETE_FIELD
+from config.socket_config import socketio
 
 load_dotenv()
 
@@ -142,28 +143,51 @@ def get_plan_information(preapproval_id):
     except Exception as e:
         return jsonify({"error": "Failed to retrieve plan information", "details": str(e)}), 500
     
-@SUBSCRIPTIONS.route("/reactive/subscription",methods=["POST"])
+@SUBSCRIPTIONS.route("/reactive/subscription", methods=["POST"])
 def reactive_subscription():
     data = request.get_json()
     preapproval_id = data.get("preapproval_id")
     businessId = data.get("businessId")
+
     try:
+        # Obtener datos de la suscripción
         response = requests.get(
             f"https://api.mercadopago.com/preapproval/{preapproval_id}",
             headers={"Authorization": f"Bearer {ACCESS_TOKEN}"}
         )
+
+        if response.status_code != 200:
+            return jsonify({
+                "error": "Failed to fetch subscription from MercadoPago",
+                "details": response.text
+            }), 400
+
         response_data = response.json()
-        business_doc = db.collection("empresas").where("id","==",businessId).get()
-        for business in business_doc:
-            business.reference.update({
-                "mercado_pago_subscription":{
-                    "id": response_data.get("id"),
-                    "status": response_data.get("status"),
-                    "next_payment_date": response_data.get("auto_recurring", {}).get("next_payment_date"),
-                    "reason": response_data.get("reason")
-                },
-                "preapproval_id":preapproval_id
-            })
-        return jsonify({"details":"Subscripcion reactivada","status":200})
+
+        # Actualizar empresa en Firestore
+        docs = db.collection("empresas").where("id", "==", businessId).get()
+        if not docs:
+            return jsonify({"error": "Business not found"}), 404
+
+        update_data = {
+            "mercado_pago_subscription": {
+                "id": response_data.get("id"),
+                "status": response_data.get("status"),
+                "next_payment_date": response_data.get("auto_recurring", {}).get("next_payment_date"),
+                "reason": response_data.get("reason")
+            },
+            "preapproval_id": preapproval_id
+        }
+
+        docs[0].reference.update(update_data)
+
+        # Emitir datos actualizados vía socket
+        socketio.emit("subscription_update", update_data)
+
+        return jsonify({"details": "Business subscription updated"}), 200
+
     except Exception as e:
-        return jsonify({"error": "Failed to reactivate subscription", "details": str(e)}), 500
+        return jsonify({
+            "error": "Failed to reactivate subscription",
+            "details": str(e)
+        }), 500

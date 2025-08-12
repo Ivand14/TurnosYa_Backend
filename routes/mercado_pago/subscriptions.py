@@ -184,7 +184,7 @@ def reactive_subscription():
         # Emitir datos actualizados vía socket
         socketio.emit("subscription_update", update_data)
 
-        return jsonify({"details": "Business subscription updated"}), 200
+        return jsonify({"details": update_data,"message":"subscription updated successfully"}), 200
 
     except Exception as e:
         return jsonify({

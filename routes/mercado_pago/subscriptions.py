@@ -144,7 +144,7 @@ def get_plan_information(preapproval_id):
     
 @SUBSCRIPTIONS.route("/reactive/subscription",methods=["POST"])
 def reactive_subscription():
-    data = request.json()
+    data = request.get_json()
     preapproval_id = data.get("preapproval_id")
     businessId = data.get("businessId")
     try:

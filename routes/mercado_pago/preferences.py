@@ -27,13 +27,17 @@ def preferences_mp(businessId):
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json"
     }
+    
+    price_base = data.get("price")
+    commission = price_base * 0.0639
+    price_with_service = round(price_base + commission, 2)
 
     body = {
         "items": [
             {
                 "title": data.get("title"),
                 "quantity": 1,
-                "unit_price": float(data.get("price", 100)),
+                "unit_price": price_with_service,
                 "currency_id": "ARS"
             }
         ],
